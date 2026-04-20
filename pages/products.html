@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — ToyVerse</title>
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    /* ---- Filter Sidebar ---- */
+    .filter-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      position: sticky;
+      top: calc(72px + 1.5rem);
+      align-self: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .filter-group + .filter-group { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-dim); }
+    .filter-group h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 1rem; }
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 0.35rem 0;
+      font-size: 0.875rem;
+      color: #d1d5db;
+      transition: color 0.2s;
+    }
+    .filter-label:hover { color: #fff; }
+    .filter-label input { accent-color: var(--accent-purple); width: 15px; height: 15px; cursor: pointer; }
+
+    /* Active filter chips */
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; min-height: 0; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(168,85,247,0.15);
+      border: 1px solid rgba(168,85,247,0.35);
+      color: #c084fc;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border-radius: 9999px;
+    }
+    .chip button { background: none; border: none; cursor: pointer; color: #c084fc; font-size: 0.9rem; line-height: 1; padding: 0; }
+
+    /* Mobile filter toggle */
+    .filter-toggle {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 0.5rem;
+      padding: 0.6rem 1rem;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .filter-sidebar   { width: 100%; position: static; display: none; }
+      .filter-sidebar.open { display: block; }
+      .filter-toggle    { display: flex; }
+      .shop-layout      { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-navbar"></div>
+
+  <!-- Page Header -->
+  <div style="padding-top:calc(72px + 2rem);padding-bottom:2rem;background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%)">
+    <div class="page-wrapper">
+      <h1 class="heading-gradient" style="font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:0.5rem">Explore Our Collection</h1>
+      <p style="color:#6b7280">Thousands of premium toys and gifts, all in one place.</p>
+    </div>
+  </div>
+
+  <!-- Mobile Filter Toggle -->
+  <div class="page-wrapper">
+    <button class="filter-toggle" id="filter-toggle-btn">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+      Filters
+    </button>
+  </div>
+
+  <!-- Main -->
+  <div class="page-wrapper" style="padding-bottom:4rem">
+    <div class="shop-layout" style="display:flex;gap:2rem;align-items:flex-start;padding-top:0.5rem">
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="filter-sidebar" id="filter-sidebar">
+
+        <!-- Clear -->
+        <button id="clear-filters" style="width:100%;background:none;border:1px solid rgba(168,85,247,0.4);color:#a855f7;border-radius:0.5rem;padding:0.5rem;font-size:0.8rem;font-weight:600;cursor:pointer;margin-bottom:1rem;font-family:'Poppins',sans-serif;transition:background 0.2s"
+          onmouseover="this.style.background='rgba(168,85,247,0.1)'"
+          onmouseout="this.style.background='none'">
+          Clear All Filters
+        </button>
+
+        <!-- Category -->
+        <div class="filter-group">
+          <h4>Category</h4>
+          <div id="cat-filters"></div>
+        </div>
+
+        <!-- Price -->
+        <div class="filter-group">
+          <h4>Price Range</h4>
+          <label class="filter-label"><input type="checkbox" class="price-cb" value="0-20"> Under $20</label>
+          <label class="filter-label"><input type="checkbox" class="price-cb" value="20-50"> $20 – $50</label>
+          <label class="filter-label"><input type="checkbox" class="price-cb" value="50-100"> $50 – $100</label>
+          <label class="filter-label"><input type="checkbox" class="price-cb" value="100+"> $100+</label>
+        </div>
+
+        <!-- Rating -->
+        <div class="filter-group">
+          <h4>Minimum Rating</h4>
+          <label class="filter-label"><input type="checkbox" class="rating-cb" value="4.5"> ⭐ 4.5 & above</label>
+          <label class="filter-label"><input type="checkbox" class="rating-cb" value="4"> ⭐ 4.0 & above</label>
+          <label class="filter-label"><input type="checkbox" class="rating-cb" value="3"> ⭐ 3.0 & above</label>
+        </div>
+
+        <!-- Sort -->
+        <div class="filter-group">
+          <h4>Sort By</h4>
+          <select title="hihi" id="sort-select" class="input-base" style="font-size:0.8rem;padding:0.55rem 0.75rem">
+            <option value="newest">Newest</option>
+            <option value="price-low">Price: Low → High</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="popular">Most Popular</option>
+          </select>
+        </div>
+
+      </aside>
+
+      <!-- ===== PRODUCTS AREA ===== -->
+      <div style="flex:1;min-width:0">
+
+        <!-- Search bar (mobile visible) -->
+        <div style="position:relative;margin-bottom:1.25rem">
+          <input class="input-base" type="text" id="search-input" placeholder="Search products…" style="padding-left:2.5rem" />
+          <svg width="16" height="16" fill="none" stroke="#6b7280" stroke-width="2" viewBox="0 0 24 24" style="position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="8"/><path d="M21 21l-6-6"/></svg>
+        </div>
+
+        <!-- Active chips -->
+        <div class="filter-chips" id="active-chips"></div>
+
+        <!-- Count + view -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+          <p style="color:#6b7280;font-size:0.875rem">
+            Showing <strong style="color:#fff" id="results-count">0</strong> products
+          </p>
+        </div>
+
+        <!-- Grid -->
+        <div class="product-grid" id="products-grid"></div>
+
+        <!-- Empty state -->
+        <div id="no-results" style="display:none;text-align:center;padding:5rem 0;color:#6b7280">
+          <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+          <h3 style="font-size:1.25rem;color:#fff;margin-bottom:0.5rem">No products found</h3>
+          <p>Try adjusting your filters or search term.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="app-footer"></div>
+
+  <script type="module">
+    import {
+      allProducts, categories,
+      mountNavbar, mountFooter,
+      productCardHTML, bindProductGrid
+    } from '/data/data.js'
+
+    mountNavbar('Shop')
+    mountFooter()
+
+    // ===== STATE =====
+    const state = {
+      cats:    [],
+      prices:  [],
+      ratings: [],
+      sort:    'newest',
+      search:  '',
+    }
+
+    // ===== BUILD CAT CHECKBOXES =====
+    document.getElementById('cat-filters').innerHTML =
+      categories.map(c => `
+        <label class="filter-label">
+          <input type="checkbox" class="cat-cb" value="${c}" ${c === 'All' ? 'checked' : ''}>
+          ${c}
+        </label>
+      `).join('')
+
+    // ===== FILTER LOGIC =====
+    function inPrice(p, ranges) {
+      if (!ranges.length) return true
+      return ranges.some(r => {
+        if (r === '100+') return p >= 100
+        const [lo, hi] = r.split('-').map(Number)
+        return p >= lo && p <= hi
+      })
+    }
+
+    function applyFilters() {
+      const q = state.search.toLowerCase()
+      let res = allProducts.filter(p => {
+        const matchCat    = !state.cats.length || state.cats.includes('All') || state.cats.includes(p.category)
+        const matchPrice  = inPrice(p.price, state.prices)
+        const matchRating = !state.ratings.length || state.ratings.some(r => p.rating >= parseFloat(r))
+        const matchSearch = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+        return matchCat && matchPrice && matchRating && matchSearch
+      })
+
+      switch (state.sort) {
+        case 'price-low':  res.sort((a,b) => a.price - b.price); break
+        case 'price-high': res.sort((a,b) => b.price - a.price); break
+        case 'rating':     res.sort((a,b) => b.rating - a.rating); break
+        case 'popular':    res.sort((a,b) => b.reviews - a.reviews); break
+      }
+
+      renderGrid(res)
+      renderChips()
+    }
+
+    function renderGrid(products) {
+      const grid     = document.getElementById('products-grid')
+      const noResult = document.getElementById('no-results')
+      document.getElementById('results-count').textContent = products.length
+
+      if (!products.length) {
+        grid.innerHTML = ''
+        noResult.style.display = 'block'
+        return
+      }
+      noResult.style.display = 'none'
+      grid.innerHTML = products.map(productCardHTML).join('')
+      bindProductGrid(grid)
+    }
+
+    function renderChips() {
+      const chips = [
+        ...state.cats.filter(c => c !== 'All').map(c => ({ label: c, type: 'cat', val: c })),
+        ...state.prices.map(p => ({ label: `$${p}`, type: 'price', val: p })),
+        ...state.ratings.map(r => ({ label: `${r}+ stars`, type: 'rating', val: r })),
+      ]
+      document.getElementById('active-chips').innerHTML = chips.map(ch => `
+        <div class="chip">${ch.label}<button onclick="removeChip('${ch.type}','${ch.val}')">×</button></div>
+      `).join('')
+    }
+
+    window.removeChip = (type, val) => {
+      if (type === 'cat')    state.cats    = state.cats.filter(c => c !== val)
+      if (type === 'price')  state.prices  = state.prices.filter(p => p !== val)
+      if (type === 'rating') state.ratings = state.ratings.filter(r => r !== val)
+      // Sync checkboxes
+      document.querySelectorAll(`.cat-cb, .price-cb, .rating-cb`).forEach(cb => {
+        if (cb.value === val) cb.checked = false
+      })
+      applyFilters()
+    }
+
+    // ===== LISTENERS =====
+    document.getElementById('cat-filters').addEventListener('change', () => {
+      state.cats = [...document.querySelectorAll('.cat-cb:checked')].map(c => c.value)
+      applyFilters()
+    })
+
+    document.querySelectorAll('.price-cb').forEach(cb => cb.addEventListener('change', () => {
+      state.prices = [...document.querySelectorAll('.price-cb:checked')].map(c => c.value)
+      applyFilters()
+    }))
+
+    document.querySelectorAll('.rating-cb').forEach(cb => cb.addEventListener('change', () => {
+      state.ratings = [...document.querySelectorAll('.rating-cb:checked')].map(c => c.value)
+      applyFilters()
+    }))
+
+    document.getElementById('sort-select').addEventListener('change', e => {
+      state.sort = e.target.value
+      applyFilters()
+    })
+
+    let searchDebounce
+    document.getElementById('search-input').addEventListener('input', e => {
+      clearTimeout(searchDebounce)
+      searchDebounce = setTimeout(() => {
+        state.search = e.target.value
+        applyFilters()
+      }, 280)
+    })
+
+    document.getElementById('clear-filters').addEventListener('click', () => {
+      state.cats = []; state.prices = []; state.ratings = []; state.sort = 'newest'; state.search = ''
+      document.querySelectorAll('.cat-cb, .price-cb, .rating-cb').forEach(cb => cb.checked = false)
+      document.querySelector('.cat-cb[value="All"]').checked = true
+      document.getElementById('sort-select').value = 'newest'
+      document.getElementById('search-input').value = ''
+      state.cats = ['All']
+      applyFilters()
+    })
+
+    // Mobile filter toggle
+    document.getElementById('filter-toggle-btn').addEventListener('click', () => {
+      document.getElementById('filter-sidebar').classList.toggle('open')
+    })
+
+    // ===== URL PARAM: pre-select category =====
+    const urlCat = new URLSearchParams(location.search).get('cat')
+    if (urlCat) {
+      state.cats = [urlCat]
+      const cb = document.querySelector(`.cat-cb[value="${urlCat}"]`)
+      if (cb) cb.checked = true
+    } else {
+      state.cats = ['All']
+      document.querySelector('.cat-cb[value="All"]').checked = true
+    }
+
+    applyFilters()
+  </script>
+</body>
+</html>

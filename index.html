@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToyVerse — Premium Toys & Gifts</title>
+  <link href="/src/index.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- NAVBAR (mounted by JS) -->
+  <div id="app-navbar"></div>
+
+  <!-- =========================================
+       HERO SECTION
+       ========================================= -->
+  <section class="gradient-animate" style="min-height:100vh;display:flex;align-items:center;padding-top:72px">
+    <div class="section-inner" style="width:100%">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center">
+
+        <!-- Left copy -->
+        <div class="slide-in-left" style="display:flex;flex-direction:column;gap:2rem">
+          <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);padding:0.4rem 1rem;border-radius:9999px;width:fit-content">
+            <span style="font-size:0.75rem;color:#a855f7;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">✦ New Arrivals 2024</span>
+          </div>
+
+          <h1 style="font-size:clamp(2.8rem,6vw,5.5rem);line-height:1.05;letter-spacing:-0.03em">
+            Discover the<br>Magic of
+            <span class="text-gradient"> Play</span>
+          </h1>
+
+          <p style="color:#9ca3af;font-size:1.1rem;line-height:1.7;max-width:480px">
+            Premium toys and gifts for every age. From timeless classics to cutting-edge innovations — find the perfect gift that sparks joy and imagination.
+          </p>
+
+          <div style="display:flex;gap:1rem;flex-wrap:wrap">
+            <a href="/pages/products.html" class="btn-primary" style="font-size:1rem;padding:0.9rem 2rem">Shop Now</a>
+            <a href="/pages/about.html"    class="btn-outline" style="font-size:1rem;padding:0.9rem 2rem">Learn More</a>
+          </div>
+
+          <!-- Stats -->
+          <div style="display:flex;gap:2.5rem;padding-top:0.5rem">
+            <div>
+              <p class="text-gradient" style="font-size:2rem;font-family:'Space Mono',monospace;font-weight:700">5K+</p>
+              <p style="color:#6b7280;font-size:0.8rem">Products</p>
+            </div>
+            <div>
+              <p class="text-gradient" style="font-size:2rem;font-family:'Space Mono',monospace;font-weight:700">50K+</p>
+              <p style="color:#6b7280;font-size:0.8rem">Happy Customers</p>
+            </div>
+            <div>
+              <p class="text-gradient" style="font-size:2rem;font-family:'Space Mono',monospace;font-weight:700">4.9★</p>
+              <p style="color:#6b7280;font-size:0.8rem">Avg Rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual -->
+        <div class="float-animate" style="position:relative;display:flex;align-items:center;justify-content:center">
+          <div style="
+            width:420px;height:420px;
+            background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(236,72,153,0.15));
+            border:1px solid rgba(168,85,247,0.25);
+            border-radius:40% 60% 60% 40% / 50% 40% 60% 50%;
+            display:flex;align-items:center;justify-content:center;
+            position:relative;overflow:hidden;
+          ">
+            <span style="font-size:7rem;filter:drop-shadow(0 0 30px rgba(168,85,247,0.6))">🎁</span>
+            <div style="position:absolute;top:1.5rem;right:1.5rem;background:linear-gradient(135deg,#fbbf24,#f97316);color:#000;padding:0.4rem 1rem;border-radius:9999px;font-weight:700;font-size:0.8rem">
+              NEW ✦
+            </div>
+          </div>
+
+          <!-- Floating mini cards -->
+          <div style="position:absolute;top:2rem;left:-2rem;background:rgba(26,26,26,0.9);border:1px solid rgba(168,85,247,0.4);border-radius:0.75rem;padding:0.75rem 1.25rem;animation:float 4s ease-in-out infinite;animation-delay:-1s">
+            <p style="font-size:0.7rem;color:#6b7280">Free Shipping</p>
+            <p style="font-size:0.9rem;font-weight:700;color:#a855f7">Orders $50+</p>
+          </div>
+          <div style="position:absolute;bottom:2rem;right:-2rem;background:rgba(26,26,26,0.9);border:1px solid rgba(236,72,153,0.4);border-radius:0.75rem;padding:0.75rem 1.25rem;animation:float 4s ease-in-out infinite;animation-delay:-2.5s">
+            <p style="font-size:0.7rem;color:#6b7280">Happy Customers</p>
+            <p style="font-size:0.9rem;font-weight:700;color:#ec4899">50,000+ Reviews</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       CATEGORIES
+       ========================================= -->
+  <section class="section" style="background:#1A1A1A">
+    <div class="section-inner">
+      <h2 class="heading-gradient" style="font-size:clamp(2rem,4vw,3rem);text-align:center;margin-bottom:3rem">
+        Shop by Category
+      </h2>
+
+      <div class="product-grid" id="cat-grid"></div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       FEATURED PRODUCTS
+       ========================================= -->
+  <section class="section">
+    <div class="section-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem">
+        <h2 class="heading-gradient" style="font-size:clamp(2rem,4vw,3rem)">Featured Products</h2>
+        <a href="/pages/products.html" style="color:#a855f7;font-weight:600;text-decoration:none;transition:color 0.25s" onmouseover="this.style.color='#ec4899'" onmouseout="this.style.color='#a855f7'">
+          View All →
+        </a>
+      </div>
+
+      <div class="product-grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       WHY US
+       ========================================= -->
+  <section class="section" style="background:#1A1A1A">
+    <div class="section-inner">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem">
+
+        <div class="card" style="padding:2rem">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#db2777);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem">
+            <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8l1 12a2 2 0 002 2h8a2 2 0 002-2L19 8M10 12v4M14 12v4"/></svg>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:0.5rem">Free Shipping</h3>
+          <p style="color:#6b7280;font-size:0.875rem;line-height:1.6">On all orders over $50. Delivered in 5–7 business days worldwide.</p>
+        </div>
+
+        <div class="card" style="padding:2rem">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#0891b2,#2563eb);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem">
+            <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:0.5rem">Easy Returns</h3>
+          <p style="color:#6b7280;font-size:0.875rem;line-height:1.6">30-day hassle-free returns. No questions asked, full refund guaranteed.</p>
+        </div>
+
+        <div class="card" style="padding:2rem">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#16a34a,#059669);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem">
+            <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:0.5rem">24/7 Support</h3>
+          <p style="color:#6b7280;font-size:0.875rem;line-height:1.6">Expert help via live chat, email, and phone whenever you need it.</p>
+        </div>
+
+        <div class="card" style="padding:2rem">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#d97706,#dc2626);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem">
+            <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:0.5rem">Secure Payments</h3>
+          <p style="color:#6b7280;font-size:0.875rem;line-height:1.6">SSL-encrypted checkout. We never store your payment information.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================
+       NEWSLETTER
+       ========================================= -->
+  <section class="section" style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(219,39,119,0.12));border-top:1px solid rgba(168,85,247,0.2);border-bottom:1px solid rgba(168,85,247,0.2)">
+    <div class="section-inner" style="text-align:center;max-width:640px;margin:0 auto">
+      <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem">
+        Get <span class="text-gradient">10% Off</span> Your First Order
+      </h2>
+      <p style="color:#9ca3af;margin-bottom:2rem;line-height:1.6">Subscribe to our newsletter for exclusive deals, new arrivals, and gift ideas.</p>
+      <form id="newsletter-form" style="display:flex;gap:0.75rem;max-width:480px;margin:0 auto;flex-wrap:wrap">
+        <input class="input-base" type="email" placeholder="Enter your email…" required style="flex:1;min-width:200px" />
+        <button class="btn-primary" type="submit" style="white-space:nowrap">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER (mounted by JS) -->
+  <div id="app-footer"></div>
+
+  <!-- ===== JS ENTRY ===== -->
+  <script type="module">
+    import {
+      allProducts, categories,
+      mountNavbar, mountFooter,
+      productCardHTML, bindProductGrid,
+      addToCart
+    } from './data/data.js'
+
+    // Mount shared components
+    mountNavbar('Home')
+    mountFooter()
+
+    // ——— Category Grid ———
+    const catColors = [
+      ['#7c3aed','#db2777'], ['#0891b2','#2563eb'],
+      ['#16a34a','#059669'], ['#d97706','#dc2626'],
+      ['#7c3aed','#0891b2'], ['#db2777','#d97706'],
+    ]
+    const catEmoji = { 'Building Blocks':'🧩', 'Action Figures':'🚀', 'Board Games':'♟️', 'Plushies':'🧸', 'Gadgets':'🤖', 'Arts & Crafts':'🎨' }
+
+    const catGrid = document.getElementById('cat-grid')
+    catGrid.innerHTML = categories.filter(c => c !== 'All').map((cat, i) => {
+      const [c1, c2] = catColors[i % catColors.length]
+      const count    = allProducts.filter(p => p.category === cat).length
+      return `
+        <a href="/pages/products.html?cat=${encodeURIComponent(cat)}" style="text-decoration:none">
+          <div class="card" style="padding:1.5rem;text-align:center;cursor:pointer">
+            <div style="height:100px;background:linear-gradient(135deg,${c1}33,${c2}33);border-radius:0.75rem;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:2.5rem;transition:transform 0.3s" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              ${catEmoji[cat] || '🎁'}
+            </div>
+            <h3 style="font-size:0.95rem;margin-bottom:0.25rem">${cat}</h3>
+            <p style="color:#6b7280;font-size:0.75rem">${count} products</p>
+          </div>
+        </a>
+      `
+    }).join('')
+
+    // ——— Featured Products (first 6) ———
+    const featuredGrid = document.getElementById('featured-grid')
+    featuredGrid.innerHTML = allProducts.slice(0, 6).map(productCardHTML).join('')
+    bindProductGrid(featuredGrid)
+
+    // ——— Newsletter ———
+    document.getElementById('newsletter-form').addEventListener('submit', e => {
+      e.preventDefault()
+      const email = e.target.querySelector('input').value
+      alert(`🎉 Thanks! Use code WELCOME20 for 20% off your first order.`)
+      e.target.reset()
+    })
+  </script>
+
+</body>
+</html>
