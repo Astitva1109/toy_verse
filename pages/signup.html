@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — ToyVerse</title>
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 900px) {
+      .auth-page { grid-template-columns: 1fr; }
+      .auth-visual { display: none; }
+    }
+
+    .auth-visual {
+      background: linear-gradient(145deg, #0d1f3c 0%, #1a0a2e 50%, #0F0F0F 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-visual::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+    .auth-visual::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+      bottom: -80px; left: -80px;
+    }
+    .visual-content { position: relative; z-index: 1; text-align: center; }
+
+    .auth-form-panel {
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      padding: 1rem 0;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border-dim); }
+    .divider span { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+
+    .btn-social {
+      width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 0.6rem;
+      padding: 0.7rem;
+      color: #d1d5db;
+      font-size: 0.875rem; font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      font-family: 'Poppins', sans-serif;
+      text-decoration: none;
+    }
+    .btn-social:hover { border-color: var(--accent-cyan); background: rgba(6,182,212,0.06); transform: translateY(-1px); }
+
+    .field-wrap { position: relative; }
+    .field-wrap .field-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .field-wrap input { padding-left: 2.6rem; }
+    .field-wrap .toggle-pw { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0; transition: color 0.2s; display: flex; align-items: center; }
+    .field-wrap .toggle-pw:hover { color: #fff; }
+
+    .field-error { font-size: 0.72rem; color: #f87171; margin-top: 0.3rem; min-height: 1rem; display: block; }
+    .field-success { font-size: 0.72rem; color: #4ade80; margin-top: 0.3rem; display: block; }
+
+    /* ── Password Strength Bar ── */
+    .strength-bar-wrap {
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 0.3rem;
+    }
+    .strength-seg {
+      flex: 1;
+      height: 4px;
+      border-radius: 9999px;
+      background: var(--border-mid);
+      transition: background 0.35s;
+    }
+    .strength-label {
+      font-size: 0.7rem;
+      margin-top: 0.3rem;
+      font-weight: 600;
+      min-height: 1rem;
+      transition: color 0.3s;
+    }
+
+    /* ── Requirements checklist ── */
+    .req-list { margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .req-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: #6b7280; transition: color 0.3s; }
+    .req-item.met { color: #4ade80; }
+    .req-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+
+    @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+    @keyframes orbFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+    .orb { border-radius: 50%; position: absolute; filter: blur(40px); opacity: 0.3; animation: orbFloat 6s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- ===== LEFT VISUAL ===== -->
+  <div class="auth-visual">
+    <div class="orb" style="width:300px;height:300px;background:#0891b2;top:0%;left:10%;animation-delay:0s"></div>
+    <div class="orb" style="width:220px;height:220px;background:#7c3aed;bottom:10%;right:5%;animation-delay:-2s"></div>
+    <div class="orb" style="width:160px;height:160px;background:#db2777;top:55%;left:45%;animation-delay:-4s"></div>
+
+    <div class="visual-content">
+      <a href="/" style="display:inline-flex;align-items:center;gap:0.6rem;text-decoration:none;margin-bottom:3rem">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#06b6d4">
+          <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+        </svg>
+        <span style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700" class="heading-gradient">ToyVerse</span>
+      </a>
+
+      <div style="font-size:5rem;margin-bottom:1.5rem;filter:drop-shadow(0 0 40px rgba(6,182,212,0.6))">🚀</div>
+
+      <h2 style="font-size:1.8rem;margin-bottom:1rem;line-height:1.2">
+        Join <span class="text-gradient">ToyVerse</span><br>Today
+      </h2>
+      <p style="color:#9ca3af;line-height:1.7;max-width:320px;font-size:0.9rem">
+        Create your free account and start exploring thousands of premium toys and gifts.
+      </p>
+
+      <!-- Stats -->
+      <div style="margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;max-width:300px">
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1rem;text-align:center">
+          <p class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">50K+</p>
+          <p style="font-size:0.75rem;color:#6b7280">Happy Members</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1rem;text-align:center">
+          <p class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">5K+</p>
+          <p style="font-size:0.75rem;color:#6b7280">Products</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1rem;text-align:center">
+          <p class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">4.9★</p>
+          <p style="font-size:0.75rem;color:#6b7280">Avg Rating</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1rem;text-align:center">
+          <p class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">Free</p>
+          <p style="font-size:0.75rem;color:#6b7280">To Join</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT FORM PANEL ===== -->
+  <div class="auth-form-panel">
+    <div class="auth-card slide-in-up">
+
+      <!-- Header -->
+      <div style="margin-bottom:1.75rem">
+        <a href="/" id="mobile-logo" style="display:none;align-items:center;gap:0.5rem;text-decoration:none;margin-bottom:1.5rem">
+          <span style="font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700" class="heading-gradient">ToyVerse</span>
+        </a>
+        <h1 style="font-size:1.9rem;margin-bottom:0.35rem">Create account</h1>
+        <p style="color:#6b7280;font-size:0.875rem">
+          Already have an account? <a href="/pages/login.html" style="color:#a855f7;text-decoration:none;font-weight:600" onmouseover="this.style.color='#ec4899'" onmouseout="this.style.color='#a855f7'">Sign in →</a>
+        </p>
+      </div>
+
+      <!-- Social -->
+      <div style="display:flex;gap:0.6rem;margin-bottom:0.25rem">
+        <button class="btn-social" style="font-size:0.8rem" onclick="socialSignup('Google')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="btn-social" style="font-size:0.8rem" onclick="socialSignup('GitHub')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </button>
+        <button class="btn-social" style="font-size:0.8rem" onclick="socialSignup('Apple')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Apple
+        </button>
+      </div>
+
+      <div class="divider"><span>or register with email</span></div>
+
+      <!-- Signup Form -->
+      <form id="signup-form" novalidate style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Name row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:0.4rem">First Name</label>
+            <div class="field-wrap">
+              <svg class="field-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input class="input-base" type="text" id="fname" placeholder="John" autocomplete="given-name" />
+            </div>
+            <span class="field-error" id="fname-error"></span>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:0.4rem">Last Name</label>
+            <div class="field-wrap">
+              <svg class="field-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input class="input-base" type="text" id="lname" placeholder="Doe" autocomplete="family-name" />
+            </div>
+            <span class="field-error" id="lname-error"></span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:0.4rem">Email Address</label>
+          <div class="field-wrap">
+            <svg class="field-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <input class="input-base" type="email" id="reg-email" placeholder="john@example.com" autocomplete="email" />
+          </div>
+          <span class="field-error" id="reg-email-error"></span>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:0.4rem">Password</label>
+          <div class="field-wrap">
+            <svg class="field-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input class="input-base" type="password" id="reg-password" placeholder="Create a strong password" autocomplete="new-password" style="padding-right:2.8rem" />
+            <button type="button" class="toggle-pw" id="toggle-pw1">
+              <svg id="eye1" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+
+          <!-- Strength bar -->
+          <div class="strength-bar-wrap" id="strength-bar">
+            <div class="strength-seg" id="seg1"></div>
+            <div class="strength-seg" id="seg2"></div>
+            <div class="strength-seg" id="seg3"></div>
+            <div class="strength-seg" id="seg4"></div>
+          </div>
+          <p class="strength-label" id="strength-label"></p>
+
+          <!-- Requirements -->
+          <div class="req-list">
+            <div class="req-item" id="req-len"><span class="req-dot"></span> At least 8 characters</div>
+            <div class="req-item" id="req-upper"><span class="req-dot"></span> One uppercase letter</div>
+            <div class="req-item" id="req-num"><span class="req-dot"></span> One number</div>
+            <div class="req-item" id="req-special"><span class="req-dot"></span> One special character (!@#$…)</div>
+          </div>
+
+          <span class="field-error" id="reg-pw-error"></span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label style="display:block;font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:0.4rem">Confirm Password</label>
+          <div class="field-wrap">
+            <svg class="field-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <input class="input-base" type="password" id="reg-confirm" placeholder="Re-enter your password" autocomplete="new-password" style="padding-right:2.8rem" />
+            <button type="button" class="toggle-pw" id="toggle-pw2">
+              <svg id="eye2" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="field-error" id="confirm-error"></span>
+        </div>
+
+        <!-- Terms -->
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;padding-top:0.25rem">
+          <input type="checkbox" id="terms" style="width:15px;height:15px;accent-color:var(--accent-purple);cursor:pointer;margin-top:2px;flex-shrink:0" />
+          <label for="terms" style="font-size:0.8rem;color:#9ca3af;cursor:pointer;line-height:1.5">
+            I agree to ToyVerse's <a href="#" style="color:#a855f7;text-decoration:none">Terms of Service</a> and <a href="#" style="color:#a855f7;text-decoration:none">Privacy Policy</a>
+          </label>
+        </div>
+        <span class="field-error" id="terms-error" style="margin-top:-0.5rem"></span>
+
+        <!-- Newsletter opt-in -->
+        <div style="display:flex;align-items:center;gap:0.6rem">
+          <input type="checkbox" id="newsletter" checked style="width:15px;height:15px;accent-color:var(--accent-purple);cursor:pointer" />
+          <label for="newsletter" style="font-size:0.8rem;color:#9ca3af;cursor:pointer">Send me exclusive deals & new arrivals</label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary" id="signup-btn" style="width:100%;padding:0.9rem;font-size:0.95rem;margin-top:0.25rem;position:relative">
+          <span id="signup-btn-text">Create Account</span>
+          <span id="signup-spinner" style="display:none;position:absolute;right:1.2rem;top:50%;transform:translateY(-50%)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </span>
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:0.75rem;padding:1rem 1.25rem;display:none;align-items:center;gap:0.75rem;box-shadow:0 12px 40px rgba(0,0,0,0.5);animation:slideInUp 0.4s ease;max-width:320px">
+  <span id="toast-icon" style="font-size:1.25rem">✓</span>
+  <span id="toast-msg" style="font-size:0.875rem;color:#d1d5db"></span>
+</div>
+
+<style>@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }</style>
+
+<script type="module">
+  // ===== TOAST =====
+  function showToast(msg, icon = '✓', color = '#4ade80') {
+    const t = document.getElementById('toast')
+    document.getElementById('toast-msg').textContent  = msg
+    document.getElementById('toast-icon').textContent = icon
+    document.getElementById('toast-icon').style.color = color
+    t.style.display = 'flex'
+    clearTimeout(window._toastTimer)
+    window._toastTimer = setTimeout(() => { t.style.display = 'none' }, 3500)
+  }
+
+  window.socialSignup = (p) => showToast(`${p} signup coming soon!`, '🔗', '#06b6d4')
+
+  // ===== TOGGLE PASSWORDS =====
+  function makeToggle(btnId, inputId, iconId) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      const inp = document.getElementById(inputId)
+      const ic  = document.getElementById(iconId)
+      const hidden = inp.type === 'password'
+      inp.type = hidden ? 'text' : 'password'
+      ic.innerHTML = hidden
+        ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+        : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
+    })
+  }
+  makeToggle('toggle-pw1', 'reg-password', 'eye1')
+  makeToggle('toggle-pw2', 'reg-confirm',  'eye2')
+
+  // ===== PASSWORD STRENGTH =====
+  const strengthConfig = [
+    { label: 'Weak',      color: '#ef4444', segs: 1 },
+    { label: 'Fair',      color: '#f97316', segs: 2 },
+    { label: 'Good',      color: '#eab308', segs: 3 },
+    { label: 'Strong',    color: '#4ade80', segs: 4 },
+  ]
+
+  function calcStrength(pw) {
+    let score = 0
+    const reqs = {
+      len:     pw.length >= 8,
+      upper:   /[A-Z]/.test(pw),
+      num:     /[0-9]/.test(pw),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(pw),
+    }
+    if (reqs.len)     score++
+    if (reqs.upper)   score++
+    if (reqs.num)     score++
+    if (reqs.special) score++
+    return { score, reqs }
+  }
+
+  document.getElementById('reg-password').addEventListener('input', (e) => {
+    const pw = e.target.value
+    const { score, reqs } = calcStrength(pw)
+
+    // Update requirement dots
+    document.getElementById('req-len').classList.toggle('met',     reqs.len)
+    document.getElementById('req-upper').classList.toggle('met',   reqs.upper)
+    document.getElementById('req-num').classList.toggle('met',     reqs.num)
+    document.getElementById('req-special').classList.toggle('met', reqs.special)
+
+    if (!pw) {
+      ;[1,2,3,4].forEach(i => document.getElementById(`seg${i}`).style.background = 'var(--border-mid)')
+      document.getElementById('strength-label').textContent = ''
+      return
+    }
+
+    const cfg = strengthConfig[score - 1] || strengthConfig[0]
+    ;[1,2,3,4].forEach(i => {
+      const seg = document.getElementById(`seg${i}`)
+      seg.style.background = i <= cfg.segs ? cfg.color : 'var(--border-mid)'
+    })
+    document.getElementById('strength-label').textContent = cfg.label
+    document.getElementById('strength-label').style.color = cfg.color
+  })
+
+  // ===== FIELD ERROR HELPERS =====
+  function setError(id, msg) {
+    const el = document.getElementById(id)
+    el.textContent = msg
+  }
+  function clearErrors() {
+    ['fname-error','lname-error','reg-email-error','reg-pw-error','confirm-error','terms-error']
+      .forEach(id => setError(id, ''))
+    document.querySelectorAll('.input-base').forEach(el => el.style.borderColor = '')
+  }
+
+  // ===== LIVE CONFIRM MATCH =====
+  document.getElementById('reg-confirm').addEventListener('input', () => {
+    const pw  = document.getElementById('reg-password').value
+    const cfm = document.getElementById('reg-confirm').value
+    const el  = document.getElementById('confirm-error')
+    if (cfm && pw !== cfm) {
+      el.textContent  = 'Passwords do not match.'
+      el.style.color  = '#f87171'
+      document.getElementById('reg-confirm').style.borderColor = '#f87171'
+    } else if (cfm && pw === cfm) {
+      el.textContent  = '✓ Passwords match'
+      el.style.color  = '#4ade80'
+      el.className    = 'field-success'
+      document.getElementById('reg-confirm').style.borderColor = '#4ade80'
+    } else {
+      el.textContent  = ''
+    }
+  })
+
+  // ===== FORM SUBMIT =====
+  document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    clearErrors()
+
+    const fname   = document.getElementById('fname').value.trim()
+    const lname   = document.getElementById('lname').value.trim()
+    const email   = document.getElementById('reg-email').value.trim()
+    const pw      = document.getElementById('reg-password').value
+    const confirm = document.getElementById('reg-confirm').value
+    const terms   = document.getElementById('terms').checked
+
+    let hasError = false
+    function err(id, msg, inputId) {
+      setError(id, msg)
+      if (inputId) document.getElementById(inputId).style.borderColor = '#f87171'
+      hasError = true
+    }
+
+    if (!fname) err('fname-error', 'First name is required.', 'fname')
+    if (!lname) err('lname-error', 'Last name is required.',  'lname')
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) err('reg-email-error', 'Enter a valid email.', 'reg-email')
+
+    const { score, reqs } = calcStrength(pw)
+    if (!pw)      err('reg-pw-error', 'Password is required.', 'reg-password')
+    else if (score < 2) err('reg-pw-error', 'Password is too weak. Meet at least 2 requirements.', 'reg-password')
+
+    if (pw !== confirm) err('confirm-error', 'Passwords do not match.', 'reg-confirm')
+    if (!terms) err('terms-error', 'You must accept the Terms of Service to continue.')
+
+    if (hasError) {
+      document.getElementById('signup-form').classList.add('shake')
+      setTimeout(() => document.getElementById('signup-form').classList.remove('shake'), 400)
+      return
+    }
+
+    // Show spinner
+    const btn = document.getElementById('signup-btn')
+    btn.disabled = true
+    document.getElementById('signup-btn-text').textContent = 'Creating account…'
+    document.getElementById('signup-spinner').style.display = 'block'
+
+    await new Promise(r => setTimeout(r, 1400))
+
+    // Save to localStorage
+    const users = JSON.parse(localStorage.getItem('tv_users') || '[]')
+    if (users.find(u => u.email === email)) {
+      btn.disabled = false
+      document.getElementById('signup-btn-text').textContent = 'Create Account'
+      document.getElementById('signup-spinner').style.display = 'none'
+      err('reg-email-error', 'An account with this email already exists.', 'reg-email')
+      return
+    }
+
+    users.push({ email, name: `${fname} ${lname}`, password: pw })
+    localStorage.setItem('tv_users', JSON.stringify(users))
+
+    // Auto login
+    localStorage.setItem('tv_session', JSON.stringify({ email, name: `${fname} ${lname}`, loggedIn: true }))
+
+    showToast(`Account created! Welcome, ${fname}! 🎉`, '🚀', '#4ade80')
+    setTimeout(() => window.location.href = '/', 1200)
+  })
+
+  // Mobile logo
+  if (window.innerWidth <= 900) {
+    document.getElementById('mobile-logo').style.display = 'flex'
+  }
+</script>
+</body>
+</html>
