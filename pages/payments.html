@@ -181,10 +181,10 @@
         </div>
 
         <!-- Payment Method -->
-        <div class="form-card slide-in-up" style="animation-delay:0.1s">
+        <div class="form-card slide-in-up animation-delay:0.1s">
           <h2 class="form-card-title">💳 Payment Method</h2>
-          <fieldset style="border:none;padding:0;margin:0">
-            <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a payment method</legend>
+          <fieldset class="border:none;padding:0;margin:0">
+            <legend class="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a payment method</legend>
             <label class="pay-method selected" id="pm-card" data-method="card">
               <input type="radio" name="pay-method" value="card" checked aria-label="Pay by Credit or Debit Card" />
               <span class="pay-method-name">Credit / Debit Card</span>
@@ -220,10 +220,10 @@
         </div>
 
         <!-- Shipping -->
-        <div class="form-card slide-in-up" style="animation-delay:0.2s">
+        <div class="form-card slide-in-up animation-delay:0.2s">
           <h2 class="form-card-title">🚚 Shipping Method</h2>
-          <fieldset style="border:none;padding:0;margin:0">
-            <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a shipping method</legend>
+          <fieldset class="border:none;padding:0;margin:0">
+            <legend class="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a shipping method</legend>
             <label class="ship-option selected" data-cost="0">
               <input type="radio" name="ship-method" value="standard" checked aria-label="Standard Shipping, free, 5 to 7 business days" />
               <div class="ship-info"><p class="ship-name">Standard Shipping</p><p class="ship-eta">5–7 business days</p></div>
@@ -250,7 +250,7 @@
 
         <div class="sum-rows">
           <div class="sum-row"><span class="sum-label">Subtotal</span><span id="pay-subtotal">$0.00</span></div>
-          <div class="sum-row" id="pay-discount-row" style="display:none">
+          <div class="sum-row display:none" id="pay-discount-row">
             <span class="sum-label">Discount</span>
             <span id="pay-discount" class="sum-discount-val">-$0.00</span>
           </div>

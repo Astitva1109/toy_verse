@@ -12,7 +12,7 @@ export default defineConfig({
         main:     'index.html',
         products: 'pages/products.html',
         cart:     'pages/cart.html',
-        payment:  'pages/payment.html',
+        payment:  'pages/payments.html',
         login:    'pages/login.html',
         signup:   'pages/signup.html',
       },
