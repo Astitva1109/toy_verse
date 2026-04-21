@@ -9,10 +9,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: 'index.html',
+        main:     'index.html',
         products: 'pages/products.html',
-        cart: 'pages/cart.html',
-        payment: 'pages/payments.html',
+        cart:     'pages/cart.html',
+        payment:  'pages/payment.html',
+        login:    'pages/login.html',
+        signup:   'pages/signup.html',
       },
     },
   },
