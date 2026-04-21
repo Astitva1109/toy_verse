@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — ToyVerse</title>
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    .contact-header {
+      padding-top: calc(72px + 3rem);
+      padding-bottom: 3rem;
+      background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%);
+      text-align: center;
+    }
+    .contact-title  { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; }
+    .contact-sub    { color: #6b7280; font-size: 1rem; max-width: 500px; margin: 0 auto; }
+
+    /* ── Layout ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 3rem;
+      align-items: start;
+      padding-bottom: 5rem;
+    }
+    @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+
+    /* ── Form card ── */
+    .contact-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 2.5rem;
+    }
+    .contact-form-title { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .contact-form-sub   { color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem; }
+
+    .form-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .form-label { font-size: 0.78rem; font-weight: 600; color: #9ca3af; }
+
+    /* Subject tabs */
+    .subject-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .subject-tab {
+      padding: 0.45rem 0.9rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dim);
+      background: none;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+    }
+    .subject-tab:hover  { border-color: var(--accent-purple); color: #fff; }
+    .subject-tab.active { border-color: var(--accent-purple); background: rgba(168,85,247,0.12); color: #a855f7; }
+
+    .char-counter { font-size: 0.72rem; color: #6b7280; text-align: right; margin-top: 0.3rem; }
+
+    .form-submit-btn { width: 100%; padding: 0.9rem; font-size: 0.95rem; margin-top: 0.5rem; }
+
+    /* Success state */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #16a34a, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .success-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .success-msg   { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem; }
+
+    /* ── Sidebar ── */
+    .contact-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .contact-info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 1.75rem;
+    }
+    .contact-info-title { font-size: 1.1rem; margin-bottom: 1.25rem; }
+
+    .contact-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .contact-info-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .contact-info-icon {
+      width: 40px; height: 40px;
+      border-radius: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+    .contact-info-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.2rem; }
+    .contact-info-val   { font-size: 0.9rem; font-weight: 600; }
+    .contact-info-sub   { font-size: 0.75rem; color: #6b7280; margin-top: 0.15rem; }
+
+    /* Hours card */
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day  { color: #9ca3af; }
+    .hours-time { font-weight: 600; }
+    .hours-closed { color: #f87171; }
+
+    /* Quick FAQ */
+    .quick-faq-title { font-size: 1.1rem; margin-bottom: 1rem; }
+    .quick-faq-item {
+      display: block;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-dim);
+      color: #9ca3af;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .quick-faq-item:last-child { border-bottom: none; }
+    .quick-faq-item:hover { color: #a855f7; }
+    .quick-faq-arrow { float: right; color: #6b7280; }
+
+    /* Field error */
+    .field-err { font-size: 0.72rem; color: #f87171; min-height: 1rem; }
+  </style>
+</head>
+<body>
+
+  <div id="app-navbar"></div>
+
+  <!-- Header -->
+  <div class="contact-header">
+    <div class="section-inner">
+      <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);padding:0.4rem 1rem;border-radius:9999px;margin-bottom:1.25rem">
+        <span style="font-size:0.75rem;color:#a855f7;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">✦ We'd Love to Hear From You</span>
+      </div>
+      <h1 class="heading-gradient contact-title">Get in Touch</h1>
+      <p class="contact-sub">Have a question, feedback, or need help? Our team is here and ready to assist.</p>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="page-wrapper">
+    <div class="contact-grid">
+
+      <!-- ═══ FORM ═══ -->
+      <div>
+        <div class="contact-form-card">
+
+          <!-- Default form state -->
+          <div id="form-state">
+            <h2 class="contact-form-title">Send us a message</h2>
+            <p class="contact-form-sub">We typically respond within 2–4 hours during business hours.</p>
+
+            <!-- Subject selector -->
+            <div style="margin-bottom:1.5rem">
+              <p class="form-label" style="margin-bottom:0.75rem">What can we help you with?</p>
+              <div class="subject-tabs" role="group" aria-label="Message subject">
+                <button class="subject-tab active" data-subject="General Inquiry" type="button">💬 General</button>
+                <button class="subject-tab" data-subject="Order Support" type="button">📦 Order Support</button>
+                <button class="subject-tab" data-subject="Returns & Refunds" type="button">↩️ Returns</button>
+                <button class="subject-tab" data-subject="Product Question" type="button">🧩 Product</button>
+                <button class="subject-tab" data-subject="Partnership" type="button">🤝 Partnership</button>
+                <button class="subject-tab" data-subject="Other" type="button">✉️ Other</button>
+              </div>
+            </div>
+
+            <form id="contact-form" novalidate>
+              <!-- Hidden subject field -->
+              <input type="hidden" id="subject-input" value="General Inquiry" />
+
+              <!-- Name row -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0">
+                <div class="form-field">
+                  <label class="form-label" for="c-fname">First Name *</label>
+                  <input class="input-base" type="text" id="c-fname" placeholder="John" autocomplete="given-name" aria-required="true" />
+                  <span class="field-err" id="c-fname-err" role="alert"></span>
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="c-lname">Last Name *</label>
+                  <input class="input-base" type="text" id="c-lname" placeholder="Doe" autocomplete="family-name" aria-required="true" />
+                  <span class="field-err" id="c-lname-err" role="alert"></span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="c-email">Email Address *</label>
+                <input class="input-base" type="email" id="c-email" placeholder="john@example.com" autocomplete="email" aria-required="true" />
+                <span class="field-err" id="c-email-err" role="alert"></span>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="c-order">Order Number (optional)</label>
+                <input class="input-base" type="text" id="c-order" placeholder="TVS-12345678" />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="c-message">Message *</label>
+                <textarea class="input-base" id="c-message" rows="5"
+                  placeholder="Tell us how we can help…"
+                  style="resize:vertical;min-height:120px"
+                  aria-required="true" maxlength="1000"></textarea>
+                <div class="char-counter"><span id="char-count">0</span> / 1000</div>
+                <span class="field-err" id="c-message-err" role="alert"></span>
+              </div>
+
+              <button class="btn-primary form-submit-btn" type="submit" id="contact-submit">
+                <span id="contact-btn-text">Send Message</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Success state -->
+          <div class="success-state" id="success-state">
+            <div class="success-icon" aria-hidden="true">
+              <svg width="36" height="36" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <h2 class="success-title heading-gradient">Message Sent!</h2>
+            <p class="success-msg">
+              Thanks for reaching out! We've received your message and will get back to you within 2–4 hours.
+              Check your inbox for a confirmation email.
+            </p>
+            <button class="btn-primary" id="send-another" type="button" style="padding:0.8rem 2rem">
+              Send Another Message
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ SIDEBAR ═══ -->
+      <div class="contact-sidebar">
+
+        <!-- Contact info -->
+        <div class="contact-info-card">
+          <h3 class="contact-info-title">Contact Information</h3>
+
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background:rgba(168,85,247,0.12)">📧</div>
+            <div>
+              <p class="contact-info-label">Email Us</p>
+              <p class="contact-info-val">support@toyverse.com</p>
+              <p class="contact-info-sub">Replies within 2–4 hours</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background:rgba(6,182,212,0.12)">📞</div>
+            <div>
+              <p class="contact-info-label">Call Us</p>
+              <p class="contact-info-val">+1 (800) 869-8273</p>
+              <p class="contact-info-sub">Mon–Fri, 9am–6pm EST</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background:rgba(16,163,74,0.12)">💬</div>
+            <div>
+              <p class="contact-info-label">Live Chat</p>
+              <p class="contact-info-val">Available on site</p>
+              <p class="contact-info-sub">Avg. response: 3 minutes</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background:rgba(217,119,6,0.12)">📍</div>
+            <div>
+              <p class="contact-info-label">Head Office</p>
+              <p class="contact-info-val">New York, NY 10001</p>
+              <p class="contact-info-sub">United States</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Business Hours -->
+        <div class="contact-info-card">
+          <h3 class="contact-info-title">Business Hours</h3>
+          <div class="hours-row"><span class="hours-day">Monday – Friday</span><span class="hours-time">9:00am – 6:00pm</span></div>
+          <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">10:00am – 4:00pm</span></div>
+          <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-closed">Closed</span></div>
+          <p style="font-size:0.75rem;color:#6b7280;margin-top:0.75rem">All times in Eastern Standard Time (EST)</p>
+        </div>
+
+        <!-- Quick FAQ links -->
+        <div class="contact-info-card">
+          <h3 class="quick-faq-title">Quick Answers</h3>
+          <a href="/pages/support.html" class="quick-faq-item">How do I track my order? <span class="quick-faq-arrow">→</span></a>
+          <a href="/pages/support.html" class="quick-faq-item">What is your return policy? <span class="quick-faq-arrow">→</span></a>
+          <a href="/pages/support.html" class="quick-faq-item">Do you offer gift wrapping? <span class="quick-faq-arrow">→</span></a>
+          <a href="/pages/support.html" class="quick-faq-item">How long does shipping take? <span class="quick-faq-arrow">→</span></a>
+          <a href="/pages/support.html" class="quick-faq-item">Can I change or cancel my order? <span class="quick-faq-arrow">→</span></a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="app-footer"></div>
+
+  <script type="module">
+    import { mountNavbar, mountFooter } from '../src/data/data.js'
+    mountNavbar('Contact')
+    mountFooter()
+
+    // Subject tabs
+    let selectedSubject = 'General Inquiry'
+    document.querySelectorAll('.subject-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'))
+        tab.classList.add('active')
+        selectedSubject = tab.dataset.subject
+        document.getElementById('subject-input').value = selectedSubject
+      })
+    })
+
+    // Char counter
+    document.getElementById('c-message').addEventListener('input', e => {
+      document.getElementById('char-count').textContent = e.target.value.length
+    })
+
+    // Validation helpers
+    function setErr(id, msg) { document.getElementById(id).textContent = msg }
+    function clearErr(id)    { document.getElementById(id).textContent = '' }
+
+    document.getElementById('c-fname').addEventListener('input',   () => clearErr('c-fname-err'))
+    document.getElementById('c-lname').addEventListener('input',   () => clearErr('c-lname-err'))
+    document.getElementById('c-email').addEventListener('input',   () => clearErr('c-email-err'))
+    document.getElementById('c-message').addEventListener('input', () => clearErr('c-message-err'))
+
+    // Form submit
+    document.getElementById('contact-form').addEventListener('submit', async e => {
+      e.preventDefault()
+      let valid = true
+
+      const fname   = document.getElementById('c-fname').value.trim()
+      const lname   = document.getElementById('c-lname').value.trim()
+      const email   = document.getElementById('c-email').value.trim()
+      const message = document.getElementById('c-message').value.trim()
+
+      if (!fname)   { setErr('c-fname-err', 'First name is required.'); valid = false }
+      if (!lname)   { setErr('c-lname-err', 'Last name is required.'); valid = false }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setErr('c-email-err', 'Enter a valid email address.'); valid = false
+      }
+      if (!message || message.length < 10) {
+        setErr('c-message-err', 'Message must be at least 10 characters.'); valid = false
+      }
+      if (!valid) return
+
+      // Simulate sending
+      const btn = document.getElementById('contact-submit')
+      btn.disabled = true
+      document.getElementById('contact-btn-text').textContent = 'Sending\u2026'
+
+      await new Promise(r => setTimeout(r, 1200))
+
+      document.getElementById('form-state').style.display    = 'none'
+      document.getElementById('success-state').style.display = 'block'
+    })
+
+    // Send another
+    document.getElementById('send-another').addEventListener('click', () => {
+      document.getElementById('contact-form').reset()
+      document.getElementById('char-count').textContent = '0'
+      document.getElementById('contact-submit').disabled = false
+      document.getElementById('contact-btn-text').textContent = 'Send Message'
+      document.getElementById('form-state').style.display    = 'block'
+      document.getElementById('success-state').style.display = 'none'
+    })
+  </script>
+
+</body>
+</html>

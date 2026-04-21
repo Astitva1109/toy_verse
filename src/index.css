@@ -496,3 +496,287 @@ h1, h2, h3, h4, h5 {
 @media (max-width: 480px) {
   .product-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 }
+
+/* =============================================
+   HAMBURGER MENU & MOBILE DRAWER
+   ============================================= */
+
+/* Hamburger button — hidden on desktop */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  transition: background 0.2s;
+}
+.hamburger-btn:hover { background: var(--bg-card); }
+
+.ham-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #d1d5db;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animate to X when open */
+.hamburger-btn.is-open .ham-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.is-open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-btn.is-open .ham-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .hamburger-btn { display: flex; }
+}
+
+/* Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.mobile-overlay.open {
+  display: block;
+  opacity: 1;
+}
+
+/* Drawer */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(320px, 85vw);
+  height: 100vh;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-dim);
+  z-index: 100;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.mobile-menu.open { transform: translateX(0); }
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mobile-menu-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0.25rem;
+  border-radius: 0.4rem;
+  transition: color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+}
+.mobile-menu-close:hover { color: #fff; background: var(--bg-hover); }
+
+.mobile-search-wrap { width: 100%; }
+.mobile-search-wrap .input-base { width: 100%; }
+
+.mobile-nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.mobile-nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #d1d5db;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 0.6rem;
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-nav-link:hover { background: var(--bg-hover); color: #fff; }
+.mobile-nav-link.active { background: rgba(168,85,247,0.12); color: #a855f7; }
+
+.mobile-auth {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-dim);
+}
+.mobile-greeting {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+/* =============================================
+   LIGHT THEME — [data-theme="light"]
+   ============================================= */
+
+:root[data-theme="light"] {
+  --bg-primary:    #f8f9fa;
+  --bg-card:       #ffffff;
+  --bg-hover:      #f1f3f5;
+  --bg-input:      #ffffff;
+  --border-dim:    #dee2e6;
+  --border-mid:    #ced4da;
+  --text-muted:    #868e96;
+  --accent-purple: #7c3aed;
+  --accent-pink:   #db2777;
+  --accent-cyan:   #0891b2;
+}
+
+/* Body */
+:root[data-theme="light"] body {
+  background-color: #f8f9fa;
+  color: #1a1a2e;
+}
+
+/* Text overrides */
+:root[data-theme="light"] h1,
+:root[data-theme="light"] h2,
+:root[data-theme="light"] h3,
+:root[data-theme="light"] h4,
+:root[data-theme="light"] h5 {
+  color: #1a1a2e;
+}
+
+/* Navbar */
+:root[data-theme="light"] .navbar {
+  background: rgba(255,255,255,0.95);
+  border-bottom-color: #dee2e6;
+}
+:root[data-theme="light"] .nav-logo {
+  background: linear-gradient(90deg, #1a1a2e 0%, #7c3aed 60%, #0891b2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+:root[data-theme="light"] .nav-links a { color: #495057; }
+:root[data-theme="light"] .nav-links a:hover,
+:root[data-theme="light"] .nav-links a.active { color: #1a1a2e; }
+:root[data-theme="light"] .nav-search input {
+  background: #f1f3f5;
+  border-color: #dee2e6;
+  color: #1a1a2e;
+}
+:root[data-theme="light"] .nav-search input::placeholder { color: #adb5bd; }
+:root[data-theme="light"] .icon-btn { color: #495057; }
+:root[data-theme="light"] .icon-btn:hover { background: #f1f3f5; color: #1a1a2e; }
+
+/* Cards */
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .product-card,
+:root[data-theme="light"] .summary-box,
+:root[data-theme="light"] .filter-sidebar,
+:root[data-theme="light"] .form-card,
+:root[data-theme="light"] .contact-form-card,
+:root[data-theme="light"] .contact-info-card,
+:root[data-theme="light"] .team-card,
+:root[data-theme="light"] .value-card,
+:root[data-theme="light"] .why-card,
+:root[data-theme="light"] .faq-item,
+:root[data-theme="light"] .help-card,
+:root[data-theme="light"] .chat-cta,
+:root[data-theme="light"] .timeline-content,
+:root[data-theme="light"] .cart-item,
+:root[data-theme="light"] .summary-sticky,
+:root[data-theme="light"] .demo-hint {
+  background: #ffffff;
+  border-color: #dee2e6;
+}
+
+/* Inputs */
+:root[data-theme="light"] .input-base {
+  background: #f8f9fa;
+  border-color: #ced4da;
+  color: #1a1a2e;
+}
+:root[data-theme="light"] .input-base::placeholder { color: #adb5bd; }
+:root[data-theme="light"] .input-base:focus { border-color: #7c3aed; }
+
+/* Text colours */
+:root[data-theme="light"] p,
+:root[data-theme="light"] span,
+:root[data-theme="light"] li,
+:root[data-theme="light"] label { color: #495057; }
+
+:root[data-theme="light"] .product-name { color: #1a1a2e; }
+:root[data-theme="light"] .product-cat  { color: #868e96; }
+:root[data-theme="light"] .product-card:hover .product-name { color: #7c3aed; }
+
+/* Section backgrounds */
+:root[data-theme="light"] .section[style*="background:#1A1A1A"],
+:root[data-theme="light"] [style*="background:#1A1A1A"] { background: #f1f3f5 !important; }
+:root[data-theme="light"] [style*="background:#1a1a1a"] { background: #f1f3f5 !important; }
+
+/* Footer */
+:root[data-theme="light"] .footer {
+  background: #ffffff;
+  border-top-color: #dee2e6;
+}
+:root[data-theme="light"] .footer-col a { color: #495057; }
+:root[data-theme="light"] .footer-col a:hover { color: #1a1a2e; }
+:root[data-theme="light"] .footer-bottom { color: #868e96; border-top-color: #dee2e6; }
+
+/* Mobile menu */
+:root[data-theme="light"] .mobile-menu {
+  background: #ffffff;
+  border-left-color: #dee2e6;
+}
+:root[data-theme="light"] .mobile-nav-link { color: #495057; }
+:root[data-theme="light"] .mobile-nav-link:hover { background: #f1f3f5; color: #1a1a2e; }
+:root[data-theme="light"] .mobile-nav-link.active { background: rgba(124,58,237,0.08); }
+
+/* Scrollbar */
+:root[data-theme="light"] ::-webkit-scrollbar-track { background: #f1f3f5; }
+
+/* Gradient hero in light mode */
+:root[data-theme="light"] .gradient-animate {
+  background: linear-gradient(-45deg, #f8f9fa, #ede7ff, #e3f2fd, #ede7ff);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+}
+
+/* Theme toggle button appearance */
+:root[data-theme="light"] .theme-toggle-btn {
+  color: #f97316;
+}
+
+/* Promo applied row */
+:root[data-theme="light"] .promo-applied-row { background: rgba(74,222,128,0.05); }
+
+/* FAQ items */
+:root[data-theme="light"] .faq-question { color: #1a1a2e; }
+:root[data-theme="light"] .faq-question:hover { color: #7c3aed; }
+:root[data-theme="light"] .faq-item.open .faq-question { color: #7c3aed; }
+:root[data-theme="light"] .faq-answer-inner { color: #495057; border-top-color: #dee2e6; }
+
+/* Smooth theme transition */
+body,
+.navbar,
+.mobile-menu,
+.product-card,
+.cart-item,
+.filter-sidebar,
+.summary-box,
+.footer,
+.input-base {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}

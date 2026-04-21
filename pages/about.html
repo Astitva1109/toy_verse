@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — ToyVerse</title>
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    /* ── Hero ── */
+    .about-hero {
+      padding-top: calc(72px + 4rem);
+      padding-bottom: 4rem;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(124,58,237,0.1) 0%, transparent 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+      top: -200px; left: 50%; transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .about-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+    }
+    .about-hero-badge-text {
+      font-size: 0.75rem;
+      color: #a855f7;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .about-hero-title {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .about-hero-sub {
+      color: #9ca3af;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .about-hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .about-stat { text-align: center; }
+    .about-stat-val {
+      font-size: 2.5rem;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+    }
+    .about-stat-lbl { color: #6b7280; font-size: 0.85rem; margin-top: 0.25rem; }
+
+    /* ── Story ── */
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .story-grid { grid-template-columns: 1fr; gap: 2rem; } }
+
+    .story-visual {
+      background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15));
+      border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      text-align: center;
+    }
+    .story-emoji { font-size: 5rem; display: block; margin-bottom: 1.5rem; }
+    .story-quote {
+      font-size: 1.1rem;
+      color: #d1d5db;
+      line-height: 1.7;
+      font-style: italic;
+    }
+    .story-quote-author {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    .story-title    { font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 1.25rem; }
+    .story-body     { color: #9ca3af; line-height: 1.8; font-size: 0.95rem; }
+    .story-body + .story-body { margin-top: 1rem; }
+
+    /* ── Mission & Values ── */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .value-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .value-card:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-6px);
+    }
+    .value-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .value-title { font-size: 1.1rem; margin-bottom: 0.6rem; }
+    .value-desc  { color: #6b7280; font-size: 0.875rem; line-height: 1.6; }
+
+    /* ── Timeline ── */
+    .timeline {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #7c3aed, #db2777, #06b6d4);
+      transform: translateX(-50%);
+    }
+    @media (max-width: 640px) {
+      .timeline::before { left: 1.25rem; }
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+    @media (max-width: 640px) {
+      .timeline-item,
+      .timeline-item:nth-child(even) { flex-direction: row; padding-left: 3rem; }
+    }
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      top: 0.35rem;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #db2777);
+      border: 2px solid var(--bg-primary);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    @media (max-width: 640px) {
+      .timeline-dot { left: 1.25rem; transform: none; }
+    }
+    .timeline-content {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-width: calc(50% - 2rem);
+    }
+    @media (max-width: 640px) { .timeline-content { max-width: 100%; } }
+    .timeline-year {
+      font-size: 0.75rem;
+      color: #a855f7;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+    .timeline-title { font-size: 1rem; margin-bottom: 0.4rem; }
+    .timeline-desc  { font-size: 0.85rem; color: #6b7280; line-height: 1.6; }
+
+    /* ── Team ── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .team-card:hover { border-color: var(--accent-purple); transform: translateY(-6px); }
+    .team-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .team-name   { font-size: 1rem; margin-bottom: 0.25rem; }
+    .team-role   { font-size: 0.8rem; color: #a855f7; font-weight: 600; margin-bottom: 0.6rem; }
+    .team-bio    { font-size: 0.8rem; color: #6b7280; line-height: 1.5; }
+
+    /* ── CTA ── */
+    .about-cta {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(219,39,119,0.12));
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 1.5rem;
+    }
+    .about-cta-title { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1rem; }
+    .about-cta-sub   { color: #9ca3af; margin-bottom: 2rem; font-size: 1rem; }
+    .about-cta-btns  { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Section titles ── */
+    .section-eyebrow {
+      font-size: 0.75rem;
+      color: #a855f7;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .section-heading {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      margin-bottom: 1rem;
+    }
+    .section-desc {
+      color: #6b7280;
+      font-size: 0.95rem;
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-navbar"></div>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="about-hero">
+    <div class="section-inner">
+      <div class="about-hero-badge">
+        <span class="about-hero-badge-text">✦ Our Story</span>
+      </div>
+      <h1 class="about-hero-title">
+        We Bring the <span class="text-gradient">Magic of Play</span><br>to Every Home
+      </h1>
+      <p class="about-hero-sub">
+        Founded in 2018, ToyVerse started with a simple belief — that every child deserves quality toys
+        that spark creativity, imagination, and joy.
+      </p>
+      <div class="about-hero-stats">
+        <div class="about-stat">
+          <p class="about-stat-val text-gradient">5K+</p>
+          <p class="about-stat-lbl">Products Curated</p>
+        </div>
+        <div class="about-stat">
+          <p class="about-stat-val text-gradient">50K+</p>
+          <p class="about-stat-lbl">Happy Families</p>
+        </div>
+        <div class="about-stat">
+          <p class="about-stat-val text-gradient">30+</p>
+          <p class="about-stat-lbl">Countries Shipped</p>
+        </div>
+        <div class="about-stat">
+          <p class="about-stat-val text-gradient">4.9★</p>
+          <p class="about-stat-lbl">Average Rating</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ OUR STORY ═══ -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="story-grid">
+        <div class="story-visual">
+          <span class="story-emoji">🎁</span>
+          <p class="story-quote">
+            "Play is not just fun — it's how children learn to think, create, and understand the world."
+          </p>
+          <p class="story-quote-author">— Alex Rivera, Founder & CEO</p>
+        </div>
+        <div>
+          <p class="section-eyebrow">How It Started</p>
+          <h2 class="story-title heading-gradient">From a Garage to 50,000+ Happy Customers</h2>
+          <p class="story-body">
+            ToyVerse was born in a small garage in 2018 when founder Alex Rivera struggled to find high-quality,
+            safe, and imaginative toys for his daughter. Tired of cheap products and overwhelming choices,
+            he decided to curate a collection that met his own high standards.
+          </p>
+          <p class="story-body" style="margin-top:1rem">
+            What started as a passion project quickly grew into a beloved brand. Today, ToyVerse ships to
+            over 30 countries and has helped more than 50,000 families find the perfect gift — from
+            STEM-focused building kits to classic plushies that stand the test of time.
+          </p>
+          <p class="story-body" style="margin-top:1rem">
+            Every product in our catalogue is hand-picked by our expert team, tested for safety, and
+            reviewed by real parents and children before it reaches your doorstep.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MISSION & VALUES ═══ -->
+  <section class="section" style="background:#1A1A1A">
+    <div class="section-inner">
+      <div style="text-align:center;margin-bottom:3rem">
+        <p class="section-eyebrow">What Drives Us</p>
+        <h2 class="section-heading heading-gradient">Our Mission & Values</h2>
+        <p class="section-desc" style="margin:0 auto">
+          Everything we do is guided by a commitment to quality, safety, and the belief that play shapes the future.
+        </p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="value-icon">🛡️</span>
+          <h3 class="value-title">Safety First</h3>
+          <p class="value-desc">Every product passes rigorous safety testing. We only stock toys that meet or exceed international safety standards.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🌱</span>
+          <h3 class="value-title">Sustainability</h3>
+          <p class="value-desc">We prioritise eco-friendly materials and partner with brands committed to reducing environmental impact.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🎯</span>
+          <h3 class="value-title">Purposeful Play</h3>
+          <p class="value-desc">We believe toys should educate, inspire, and challenge. Every product is chosen for its developmental value.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">💛</span>
+          <h3 class="value-title">Community</h3>
+          <p class="value-desc">We're more than a store — we're a community of parents, educators, and play enthusiasts sharing what works.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🚚</span>
+          <h3 class="value-title">Reliability</h3>
+          <p class="value-desc">Fast, trackable shipping and a no-fuss 30-day returns policy. We stand behind every order, every time.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">✨</span>
+          <h3 class="value-title">Delight</h3>
+          <p class="value-desc">From beautifully packaged orders to surprise loyalty rewards — we obsess over the details that make you smile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIMELINE ═══ -->
+  <section class="section">
+    <div class="section-inner">
+      <div style="text-align:center;margin-bottom:4rem">
+        <p class="section-eyebrow">Milestones</p>
+        <h2 class="section-heading heading-gradient">Our Journey</h2>
+      </div>
+
+      <div class="timeline" aria-label="Company timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <p class="timeline-year">2018</p>
+            <h3 class="timeline-title">ToyVerse Founded</h3>
+            <p class="timeline-desc">Alex Rivera launches ToyVerse from his garage with just 50 carefully curated products.</p>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div style="flex:1"></div>
+          <div class="timeline-content">
+            <p class="timeline-year">2019</p>
+            <h3 class="timeline-title">First 1,000 Customers</h3>
+            <p class="timeline-desc">Word-of-mouth growth hits 1,000 happy customers and the first major press feature in Parenting Today.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <p class="timeline-year">2020</p>
+            <h3 class="timeline-title">Going International</h3>
+            <p class="timeline-desc">Expanded shipping to 15 countries. Launched the ToyVerse Safety Seal — our promise of quality assurance.</p>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div style="flex:1"></div>
+          <div class="timeline-content">
+            <p class="timeline-year">2022</p>
+            <h3 class="timeline-title">10,000 Product Catalogue</h3>
+            <p class="timeline-desc">Passed 10,000 SKUs and launched the STEM & Educational range, now our bestselling category.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content">
+            <p class="timeline-year">2024</p>
+            <h3 class="timeline-title">50K+ Families Served</h3>
+            <p class="timeline-desc">Crossed 50,000 customers and launched our new platform — faster, smarter, and more magical than ever.</p>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TEAM ═══ -->
+  <section class="section" style="background:#1A1A1A">
+    <div class="section-inner">
+      <div style="text-align:center;margin-bottom:3rem">
+        <p class="section-eyebrow">The People</p>
+        <h2 class="section-heading heading-gradient">Meet Our Team</h2>
+        <p class="section-desc" style="margin:0 auto">
+          A small but mighty team united by a love of toys, great design, and making families smile.
+        </p>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(236,72,153,0.2))">🧑‍💼</div>
+          <h3 class="team-name">Alex Rivera</h3>
+          <p class="team-role">Founder & CEO</p>
+          <p class="team-bio">Father of two, toy enthusiast, and the original dreamer behind ToyVerse. Leads vision and strategy.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(37,99,235,0.2))">👩‍🎨</div>
+          <h3 class="team-name">Priya Nair</h3>
+          <p class="team-role">Head of Product</p>
+          <p class="team-bio">Curates every single product in our catalogue. Former child psychologist with a passion for purposeful play.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(16,163,74,0.2),rgba(5,150,105,0.2))">👨‍💻</div>
+          <h3 class="team-name">Marcus Chen</h3>
+          <p class="team-role">Lead Engineer</p>
+          <p class="team-bio">Builds the technology that makes ToyVerse fast, reliable, and delightful to use on any device.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(217,119,6,0.2),rgba(220,38,38,0.2))">👩‍💼</div>
+          <h3 class="team-name">Sofia Martínez</h3>
+          <p class="team-role">Customer Experience</p>
+          <p class="team-bio">Makes sure every interaction — from browsing to unboxing — feels special. Champion of the 5-star review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="about-cta">
+        <h2 class="about-cta-title">
+          Ready to Discover <span class="text-gradient">Something Special?</span>
+        </h2>
+        <p class="about-cta-sub">
+          Join 50,000+ families who trust ToyVerse for quality toys and unforgettable gifts.
+        </p>
+        <div class="about-cta-btns">
+          <a href="/pages/products.html" class="btn-primary" style="padding:0.9rem 2rem;font-size:1rem">Shop Now</a>
+          <a href="/pages/contact.html" class="btn-outline" style="padding:0.9rem 2rem;font-size:1rem">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="app-footer"></div>
+
+  <script type="module">
+    import { mountNavbar, mountFooter } from '../src/data/data.js'
+    mountNavbar('About')
+    mountFooter()
+  </script>
+
+</body>
+</html>

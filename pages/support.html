@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support & FAQ — ToyVerse</title>
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    /* ── Header ── */
+    .support-header {
+      padding-top: calc(72px + 3rem);
+      padding-bottom: 3rem;
+      background: linear-gradient(180deg, rgba(6,182,212,0.08) 0%, transparent 100%);
+      text-align: center;
+    }
+    .support-title { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; }
+    .support-sub   { color: #6b7280; max-width: 520px; margin: 0 auto 2.5rem; }
+
+    /* ── Search ── */
+    .support-search-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .support-search-wrap .input-base {
+      padding: 1rem 3rem 1rem 3.25rem;
+      font-size: 1rem;
+      border-radius: 0.75rem;
+    }
+    .support-search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+      pointer-events: none;
+      display: flex;
+    }
+    .support-search-clear {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+      font-size: 1.2rem;
+      display: none;
+      padding: 0;
+      line-height: 1;
+    }
+    .support-search-clear:hover { color: #fff; }
+
+    /* ── Category pills ── */
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 2.5rem 0;
+    }
+    .cat-pill {
+      padding: 0.5rem 1.1rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-dim);
+      background: none;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .cat-pill:hover { border-color: var(--accent-purple); color: #fff; }
+    .cat-pill.active { border-color: var(--accent-purple); background: rgba(168,85,247,0.12); color: #a855f7; }
+
+    /* ── Results count ── */
+    .faq-count {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      min-height: 1.25rem;
+    }
+
+    /* ── FAQ accordion ── */
+    .faq-list {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 0.85rem;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .faq-item:hover { border-color: rgba(168,85,247,0.4); }
+    .faq-item.open  { border-color: var(--accent-purple); }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.5rem;
+      cursor: pointer;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .faq-question:hover { color: #a855f7; }
+    .faq-item.open .faq-question { color: #a855f7; }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(168,85,247,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s, background 0.2s;
+      color: #a855f7;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      background: rgba(168,85,247,0.25);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .faq-item.open .faq-answer { max-height: 400px; }
+
+    .faq-answer-inner {
+      padding: 0 1.5rem 1.25rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      border-top: 1px solid var(--border-dim);
+      padding-top: 1rem;
+    }
+    .faq-answer-inner a { color: #a855f7; }
+    .faq-answer-inner a:hover { color: #ec4899; }
+
+    /* Category badge on each FAQ */
+    .faq-cat-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
+    /* ── No results ── */
+    .no-faq-results {
+      display: none;
+      text-align: center;
+      padding: 4rem 0;
+      color: #6b7280;
+    }
+    .no-faq-icon  { font-size: 3rem; margin-bottom: 1rem; }
+    .no-faq-title { font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; }
+
+    /* ── Help cards ── */
+    .help-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .help-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      text-align: center;
+      text-decoration: none;
+      transition: border-color 0.3s, transform 0.3s;
+      display: block;
+    }
+    .help-card:hover { border-color: var(--accent-purple); transform: translateY(-6px); }
+    .help-card-icon  { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .help-card-title { font-size: 1rem; color: #fff; margin-bottom: 0.4rem; }
+    .help-card-sub   { font-size: 0.8rem; color: #6b7280; }
+
+    /* ── Chat CTA ── */
+    .chat-cta {
+      background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(219,39,119,0.12));
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      text-align: center;
+    }
+    .chat-cta-title { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 0.75rem; }
+    .chat-cta-sub   { color: #9ca3af; margin-bottom: 2rem; }
+    .chat-cta-btns  { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <div id="app-navbar"></div>
+
+  <!-- Header -->
+  <div class="support-header">
+    <div class="section-inner">
+      <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);padding:0.4rem 1rem;border-radius:9999px;margin-bottom:1.25rem">
+        <span style="font-size:0.75rem;color:#06b6d4;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">✦ Help Centre</span>
+      </div>
+      <h1 class="heading-gradient support-title">How Can We Help?</h1>
+      <p class="support-sub">Search our knowledge base or browse by category to find instant answers.</p>
+
+      <div class="support-search-wrap">
+        <span class="support-search-icon" aria-hidden="true">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-6-6"/></svg>
+        </span>
+        <input class="input-base" type="text" id="faq-search"
+          placeholder="Search questions… e.g. return policy" aria-label="Search FAQ" />
+        <button class="support-search-clear" id="search-clear" aria-label="Clear search" type="button">×</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrapper" style="padding-bottom:5rem">
+
+    <!-- Category filter -->
+    <div class="category-pills" role="group" aria-label="Filter FAQ by category">
+      <button class="cat-pill active" data-cat="All" type="button">🔍 All Topics</button>
+      <button class="cat-pill" data-cat="Orders" type="button">📦 Orders</button>
+      <button class="cat-pill" data-cat="Shipping" type="button">🚚 Shipping</button>
+      <button class="cat-pill" data-cat="Returns" type="button">↩️ Returns</button>
+      <button class="cat-pill" data-cat="Products" type="button">🧩 Products</button>
+      <button class="cat-pill" data-cat="Account" type="button">👤 Account</button>
+      <button class="cat-pill" data-cat="Payments" type="button">💳 Payments</button>
+    </div>
+
+    <!-- FAQ count -->
+    <p class="faq-count" id="faq-count" aria-live="polite"></p>
+
+    <!-- FAQ list -->
+    <div class="faq-list" id="faq-list" aria-label="Frequently asked questions"></div>
+
+    <!-- No results -->
+    <div class="no-faq-results" id="no-faq" role="status">
+      <div class="no-faq-icon" aria-hidden="true">🤔</div>
+      <h3 class="no-faq-title">No results found</h3>
+      <p>Try a different search term or <a href="/pages/contact.html" style="color:#a855f7">contact our team</a> directly.</p>
+    </div>
+
+    <!-- Help channels -->
+    <section class="section" style="padding:4rem 0 2rem">
+      <div style="text-align:center;margin-bottom:2rem">
+        <h2 class="heading-gradient" style="font-size:clamp(1.8rem,3vw,2.5rem)">Still Need Help?</h2>
+        <p style="color:#6b7280;margin-top:0.5rem">Our support team is always ready to assist you.</p>
+      </div>
+      <div class="help-cards">
+        <a href="/pages/contact.html" class="help-card">
+          <span class="help-card-icon">✉️</span>
+          <p class="help-card-title">Email Support</p>
+          <p class="help-card-sub">Reply within 2–4 hours</p>
+        </a>
+        <a href="tel:+18008698273" class="help-card">
+          <span class="help-card-icon">📞</span>
+          <p class="help-card-title">Call Us</p>
+          <p class="help-card-sub">Mon–Fri, 9am–6pm EST</p>
+        </a>
+        <a href="#" class="help-card" onclick="alert('Live chat coming soon!');return false">
+          <span class="help-card-icon">💬</span>
+          <p class="help-card-title">Live Chat</p>
+          <p class="help-card-sub">Avg. response: 3 minutes</p>
+        </a>
+        <a href="/pages/contact.html" class="help-card">
+          <span class="help-card-icon">🎫</span>
+          <p class="help-card-title">Submit a Ticket</p>
+          <p class="help-card-sub">Track your support request</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Chat CTA -->
+    <div class="chat-cta">
+      <h2 class="chat-cta-title">
+        Didn't Find Your Answer?
+      </h2>
+      <p class="chat-cta-sub">
+        Our friendly support team is just a click away. We're here Monday to Friday, 9am–6pm EST.
+      </p>
+      <div class="chat-cta-btns">
+        <a href="/pages/contact.html" class="btn-primary" style="padding:0.85rem 2rem">Contact Support</a>
+        <a href="/pages/products.html" class="btn-outline" style="padding:0.85rem 2rem">Continue Shopping</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="app-footer"></div>
+
+  <script type="module">
+    import { mountNavbar, mountFooter } from '../src/data/data.js'
+    mountNavbar('Support')
+    mountFooter()
+
+    // ── FAQ Data ──
+    const faqs = [
+      // Orders
+      { q: 'How do I track my order?',                  a: 'Once your order ships, you\'ll receive a confirmation email with a tracking number. You can use this on our carrier\'s website or visit our Track Order page. Orders typically ship within 1–2 business days.', cat: 'Orders' },
+      { q: 'Can I change or cancel my order?',          a: 'Orders can be changed or cancelled within 1 hour of placing them. After that, they enter our fulfilment pipeline. Please <a href="/pages/contact.html">contact us</a> immediately if you need to make changes and we\'ll do our best to help.', cat: 'Orders' },
+      { q: 'My order arrived damaged — what do I do?',  a: 'We\'re so sorry to hear that! Please take a photo of the damaged item and packaging, then <a href="/pages/contact.html">contact our team</a> within 48 hours. We\'ll arrange a replacement or full refund right away — no return required.', cat: 'Orders' },
+      { q: 'Can I order as a gift with a message?',     a: 'Yes! During checkout, select the "Gift" option and you can add a personalised message. The invoice will not include pricing. We also offer premium gift wrapping for $4.99 — look for it on the product page.', cat: 'Orders' },
+
+      // Shipping
+      { q: 'How long does standard shipping take?',     a: 'Standard shipping typically takes 5–7 business days within the US. International orders take 10–14 business days. Express (2–3 days) and Overnight options are available at checkout.', cat: 'Shipping' },
+      { q: 'Do you ship internationally?',              a: 'Yes! We ship to over 30 countries. International shipping rates and delivery times are calculated at checkout based on your location. Customs fees may apply depending on your country\'s regulations.', cat: 'Shipping' },
+      { q: 'How do I qualify for free shipping?',       a: 'All orders over $50 qualify for free standard shipping within the US. This is automatically applied at checkout — no promo code needed. Some sale items or oversized products may be excluded.', cat: 'Shipping' },
+      { q: 'My package shows delivered but I can\'t find it', a: 'Check with neighbours and any safe spots the carrier may have left it. If it\'s still missing after 24 hours, contact us with your order number. We\'ll open a carrier investigation and arrange a replacement if needed.', cat: 'Shipping' },
+
+      // Returns
+      { q: 'What is your return policy?',               a: 'We offer hassle-free 30-day returns on all items in original condition. Simply <a href="/pages/contact.html">contact us</a> with your order number and reason for return, and we\'ll send a prepaid return label within 24 hours.', cat: 'Returns' },
+      { q: 'How long do refunds take?',                 a: 'Once we receive your return, refunds are processed within 2 business days. The money typically appears in your account within 5–7 business days depending on your bank or card provider.', cat: 'Returns' },
+      { q: 'Can I exchange an item instead of returning?', a: 'Absolutely! Contact us within 30 days with your order number and the item you\'d like instead. If there\'s a price difference, we\'ll charge or refund the difference. Exchanges ship free of charge.', cat: 'Returns' },
+
+      // Products
+      { q: 'Are your toys safe for young children?',    a: 'Safety is our top priority. Every product in our catalogue is tested to EN71 (EU) and ASTM F963 (US) safety standards. Each listing clearly shows the recommended age range. Look for the ToyVerse Safety Seal on all listings.', cat: 'Products' },
+      { q: 'How do I know which toy is right for my child\'s age?', a: 'Each product page shows a recommended age range set by the manufacturer. We also have curated gift guides filtered by age — find them in our Shop under the Age category filter. When in doubt, our team is happy to advise!', cat: 'Products' },
+      { q: 'Are your products eco-friendly?',           a: 'We\'re committed to sustainability. Over 40% of our catalogue uses recycled, FSC-certified, or sustainably sourced materials. Look for the 🌱 eco badge on qualifying products. We\'re working towards 70% by 2026.', cat: 'Products' },
+      { q: 'Do you sell replacement parts?',            a: 'For many of our brands, yes. Search for the product name + "replacement" in our shop, or <a href="/pages/contact.html">contact us</a> with the product name and the part you need and we\'ll source it for you.', cat: 'Products' },
+
+      // Account
+      { q: 'How do I create an account?',               a: 'Click "Login" in the top navigation, then select "Create Account". You\'ll need a valid email address and a secure password. You can also sign up with Google or GitHub for instant access.', cat: 'Account' },
+      { q: 'I forgot my password. How do I reset it?',  a: 'On the login page, click "Forgot password?" and enter your email. You\'ll receive a reset link within 5 minutes. Check your spam folder if it doesn\'t arrive. The link expires after 24 hours.', cat: 'Account' },
+      { q: 'How do I delete my account?',               a: 'We\'re sorry to see you go! To delete your account and all associated data, please <a href="/pages/contact.html">contact our support team</a>. We\'ll process your request within 2 business days as per GDPR guidelines.', cat: 'Account' },
+
+      // Payments
+      { q: 'What payment methods do you accept?',       a: 'We accept all major credit and debit cards (Visa, Mastercard, Amex), PayPal, and Apple Pay. All transactions are SSL-encrypted. We never store your full card details — payments are processed securely by Stripe.', cat: 'Payments' },
+      { q: 'Is it safe to enter my card details on your site?', a: 'Absolutely. Our site uses 256-bit SSL encryption and is PCI DSS compliant. Your card details go directly to our payment processor — we never see or store them. Look for the padlock icon in your browser\'s address bar.', cat: 'Payments' },
+      { q: 'Why was my payment declined?',              a: 'Payments can be declined for several reasons: incorrect card details, insufficient funds, or your bank flagging an unusual transaction. Try again with correct details, or contact your bank. You can also try a different payment method.', cat: 'Payments' },
+      { q: 'Can I use multiple promo codes on one order?', a: 'Currently only one promo code can be applied per order. If you have multiple codes, use the one with the highest discount. Our loyalty programme (coming soon) will allow stacking of points with promo codes.', cat: 'Payments' },
+    ]
+
+    // ── Colour map per category ──
+    const catColors = {
+      Orders:   { bg: 'rgba(168,85,247,0.12)',  color: '#a855f7' },
+      Shipping: { bg: 'rgba(6,182,212,0.12)',   color: '#06b6d4' },
+      Returns:  { bg: 'rgba(16,163,74,0.12)',   color: '#4ade80' },
+      Products: { bg: 'rgba(251,191,36,0.12)',  color: '#fbbf24' },
+      Account:  { bg: 'rgba(236,72,153,0.12)',  color: '#ec4899' },
+      Payments: { bg: 'rgba(217,119,6,0.12)',   color: '#f97316' },
+    }
+
+    let activeCategory = 'All'
+    let searchQuery    = ''
+
+    function getFiltered() {
+      return faqs.filter(f => {
+        const matchCat    = activeCategory === 'All' || f.cat === activeCategory
+        const matchSearch = !searchQuery   ||
+          f.q.toLowerCase().includes(searchQuery) ||
+          f.a.toLowerCase().includes(searchQuery) ||
+          f.cat.toLowerCase().includes(searchQuery)
+        return matchCat && matchSearch
+      })
+    }
+
+    function highlight(text, query) {
+      if (!query) return text
+      const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<mark style="background:rgba(168,85,247,0.3);color:#fff;border-radius:2px;padding:0 2px">$1</mark>')
+    }
+
+    function render() {
+      const filtered = getFiltered()
+      const list     = document.getElementById('faq-list')
+      const noFaq    = document.getElementById('no-faq')
+      const count    = document.getElementById('faq-count')
+
+      count.textContent = filtered.length + ' question' + (filtered.length !== 1 ? 's' : '')
+
+      if (!filtered.length) {
+        list.innerHTML      = ''
+        noFaq.style.display = 'block'
+        return
+      }
+      noFaq.style.display = 'none'
+
+      const cc = catColors[activeCategory] || {}
+
+      list.innerHTML = filtered.map((f, i) => {
+        const c = catColors[f.cat] || { bg: 'rgba(168,85,247,0.12)', color: '#a855f7' }
+        return (
+          '<div class="faq-item" data-index="' + i + '">' +
+            '<button class="faq-question" aria-expanded="false" type="button">' +
+              '<span>' + highlight(f.q, searchQuery) + '</span>' +
+              '<span class="faq-cat-badge" style="background:' + c.bg + ';color:' + c.color + '">' + f.cat + '</span>' +
+              '<span class="faq-chevron" aria-hidden="true">' +
+                '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>' +
+              '</span>' +
+            '</button>' +
+            '<div class="faq-answer" role="region">' +
+              '<div class="faq-answer-inner">' + highlight(f.a, searchQuery) + '</div>' +
+            '</div>' +
+          '</div>'
+        )
+      }).join('')
+
+      // Bind accordion
+      list.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item     = btn.closest('.faq-item')
+          const isOpen   = item.classList.contains('open')
+          // Close all
+          list.querySelectorAll('.faq-item').forEach(i => {
+            i.classList.remove('open')
+            i.querySelector('.faq-question').setAttribute('aria-expanded', 'false')
+          })
+          // Open clicked (if it wasn't already open)
+          if (!isOpen) {
+            item.classList.add('open')
+            btn.setAttribute('aria-expanded', 'true')
+          }
+        })
+      })
+    }
+
+    // Category pills
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'))
+        pill.classList.add('active')
+        activeCategory = pill.dataset.cat
+        render()
+      })
+    })
+
+    // Search
+    const searchInput = document.getElementById('faq-search')
+    const clearBtn    = document.getElementById('search-clear')
+    let debounce
+    searchInput.addEventListener('input', e => {
+      searchQuery = e.target.value.toLowerCase().trim()
+      clearBtn.style.display = searchQuery ? 'block' : 'none'
+      clearTimeout(debounce)
+      debounce = setTimeout(render, 200)
+    })
+    clearBtn.addEventListener('click', () => {
+      searchInput.value      = ''
+      searchQuery            = ''
+      clearBtn.style.display = 'none'
+      render()
+      searchInput.focus()
+    })
+
+    render()
+  </script>
+
+</body>
+</html>
