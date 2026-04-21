@@ -6,331 +6,287 @@
   <title>Checkout — ToyVerse</title>
   <link rel="stylesheet" href="/src/index.css" />
   <style>
-    /* Step bar */
-    .steps {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-bottom: 3rem;
-    }
-    .step-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      position: relative;
-      z-index: 1;
-    }
-    .step-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Space Mono', monospace;
-      font-weight: 700;
-      font-size: 0.9rem;
-      border: 2px solid var(--border-mid);
-      background: var(--bg-card);
-      color: #6b7280;
-      transition: all 0.4s;
-    }
-    .step-circle.active {
-      background: linear-gradient(135deg, #7c3aed, #db2777);
-      border-color: transparent;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(124,58,237,0.5);
-    }
-    .step-circle.done {
-      background: #16a34a;
-      border-color: transparent;
-      color: #fff;
-    }
-    .step-label { font-size: 0.72rem; color: #6b7280; font-weight: 600; }
-    .step-label.active { color: #a855f7; }
-    .step-line {
-      width: 80px;
-      height: 2px;
-      background: var(--border-dim);
-      margin-top: -1.5rem;
-    }
-    .step-line.done { background: linear-gradient(90deg, #7c3aed, #db2777); }
+    .steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 3rem; }
+    .step-item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; position: relative; z-index: 1; }
+    .step-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono',monospace; font-weight: 700; font-size: 0.9rem; border: 2px solid var(--border-mid); background: var(--bg-card); color: #6b7280; transition: all 0.4s; }
+    .step-circle.active { background: linear-gradient(135deg,#7c3aed,#db2777); border-color: transparent; color: #fff; box-shadow: 0 0 20px rgba(124,58,237,0.5); }
+    .step-circle.done   { background: #16a34a; border-color: transparent; color: #fff; }
+    .step-label         { font-size: 0.72rem; color: #6b7280; font-weight: 600; }
+    .step-label.active  { color: #a855f7; }
+    .step-line          { width: 80px; height: 2px; background: var(--border-dim); margin-top: -1.5rem; }
+    .step-line.done     { background: linear-gradient(90deg,#7c3aed,#db2777); }
 
-    /* Form section card */
-    .form-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-dim);
-      border-radius: 1rem;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-    }
-    .form-card h2 { font-size: 1.2rem; margin-bottom: 1.5rem; }
+    .checkout-header { padding-top: calc(72px + 2rem); padding-bottom: 1.5rem; background: linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%); }
+    .checkout-title  { font-size: clamp(2rem,4vw,3rem); margin-bottom: 1.5rem; }
 
-    .form-row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+    .checkout-grid { display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem; align-items: start; padding-bottom: 5rem; }
+    @media (max-width: 768px) { .checkout-grid { grid-template-columns: 1fr; } }
+
+    .form-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 1rem; padding: 2rem; margin-bottom: 1.5rem; }
+    .form-card-title { font-size: 1.2rem; margin-bottom: 1.5rem; }
+
+    .form-row       { display: grid; gap: 1rem; margin-bottom: 1rem; }
     .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
     .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-    @media(max-width:600px) {
+    @media (max-width: 600px) {
       .form-row.cols-2, .form-row.cols-3 { grid-template-columns: 1fr; }
     }
+    .field       { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field-label { font-size: 0.78rem; font-weight: 600; color: #9ca3af; }
 
-    label.field { display: flex; flex-direction: column; gap: 0.4rem; }
-    label.field span { font-size: 0.78rem; font-weight: 600; color: #9ca3af; }
+    .pay-method { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1.25rem; border-radius: 0.65rem; border: 1px solid var(--border-mid); cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0.6rem; }
+    .pay-method:hover     { border-color: var(--accent-purple); }
+    .pay-method.selected  { border-color: var(--accent-purple); background: rgba(168,85,247,0.08); }
+    .pay-method input[type="radio"] { accent-color: var(--accent-purple); }
+    .pay-method-name { font-weight: 600; font-size: 0.9rem; }
+    .pay-method-hint { margin-left: auto; font-size: 0.75rem; color: #6b7280; }
 
-    /* Payment method tabs */
-    .pay-method {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.9rem 1.25rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border-mid);
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      margin-bottom: 0.6rem;
-    }
-    .pay-method:hover { border-color: var(--accent-purple); }
-    .pay-method input[type=radio] { accent-color: var(--accent-purple); }
-    .pay-method.selected { border-color: var(--accent-purple); background: rgba(168,85,247,0.08); }
+    .card-fields { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-dim); }
+    .card-num-input { font-family: 'Space Mono',monospace; letter-spacing: 0.1em; }
 
-    /* Shipping option */
-    .ship-option {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.9rem 1.25rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border-mid);
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      margin-bottom: 0.6rem;
-    }
-    .ship-option:hover { border-color: var(--accent-purple); }
+    .ship-option { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem 1.25rem; border-radius: 0.65rem; border: 1px solid var(--border-mid); cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0.6rem; }
+    .ship-option:hover    { border-color: var(--accent-purple); }
     .ship-option.selected { border-color: var(--accent-purple); background: rgba(168,85,247,0.08); }
+    .ship-option input[type="radio"] { accent-color: var(--accent-purple); }
+    .ship-info       { flex: 1; }
+    .ship-name       { font-weight: 600; font-size: 0.9rem; }
+    .ship-eta        { font-size: 0.75rem; color: #6b7280; }
+    .ship-price-free { font-weight: 700; color: #4ade80; }
+    .ship-price      { font-weight: 700; }
 
-    /* Summary sidebar */
-    .summary-sticky {
-      position: sticky;
-      top: calc(72px + 1.5rem);
-      background: var(--bg-card);
-      border: 1px solid var(--border-dim);
-      border-radius: 1rem;
-      padding: 1.75rem;
-    }
-    .sum-row { display: flex; justify-content: space-between; padding: 0.55rem 0; font-size: 0.875rem; }
-    .sum-row.border-top { border-top: 1px solid var(--border-dim); }
+    .summary-sticky   { position: sticky; top: calc(72px + 1.5rem); background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 1rem; padding: 1.75rem; }
+    .summary-title    { font-size: 1.2rem; margin-bottom: 1.25rem; }
+    .summary-items    { max-height: 220px; overflow-y: auto; margin-bottom: 1rem; padding-right: 0.25rem; }
+    .summary-item     { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border-dim); gap: 0.5rem; }
+    .summary-item-emoji { font-size: 1.25rem; }
+    .summary-item-name  { flex: 1; font-size: 0.8rem; line-height: 1.3; }
+    .summary-item-price { font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
 
-    /* Confirmation overlay */
-    #confirm-section {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--bg-primary);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
+    .sum-rows     { border-top: 1px solid var(--border-dim); padding-top: 0.5rem; }
+    .sum-row      { display: flex; justify-content: space-between; padding: 0.55rem 0; font-size: 0.875rem; }
+    .sum-row + .sum-row { border-top: 1px solid var(--border-dim); }
+    .sum-label    { color: #9ca3af; }
+    .sum-shipping-free { color: #4ade80; font-weight: 600; }
+    .sum-shipping-paid { color: #fff;    font-weight: 600; }
+    .sum-discount-val  { color: #4ade80; font-weight: 600; }
+    .sum-total-row    { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0 0.25rem; border-top: 2px solid var(--border-mid); margin-top: 0.25rem; }
+    .sum-total-label  { font-weight: 700; font-size: 1rem; }
+    .sum-total-value  { font-size: 1.4rem; font-family: 'Space Mono',monospace; font-weight: 700; }
+
+    .place-order-btn  { width: 100%; margin-top: 1.5rem; padding: 0.9rem; font-size: 0.95rem; }
+    .secure-note      { text-align: center; font-size: 0.72rem; color: #6b7280; margin-top: 0.75rem; }
+
+    #confirm-section  { display: none; position: fixed; inset: 0; background: var(--bg-primary); z-index: 100; align-items: center; justify-content: center; padding: 2rem; }
     #confirm-section.show { display: flex; }
-
-    @keyframes popIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
-    .confirm-card { animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+    @keyframes popIn  { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .confirm-card     { background: var(--bg-card); border: 1px solid rgba(168,85,247,0.4); border-radius: 1.5rem; padding: 3.5rem; text-align: center; max-width: 560px; width: 100%; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .confirm-icon     { width: 80px; height: 80px; background: linear-gradient(135deg,#16a34a,#059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .confirm-title    { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .confirm-sub      { color: #9ca3af; font-size: 1rem; margin-bottom: 2rem; }
+    .confirm-order-box { background: var(--bg-hover); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 2rem; }
+    .confirm-order-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem; }
+    .confirm-order-num  { font-family: 'Space Mono',monospace; font-size: 1.4rem; font-weight: 700; color: #a855f7; }
+    .confirm-msg        { color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem; line-height: 1.6; }
+    .confirm-actions    { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
 
   <div id="app-navbar"></div>
 
-  <!-- Header -->
-  <div style="padding-top:calc(72px + 2rem);padding-bottom:1.5rem;background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%)">
+  <div class="checkout-header">
     <div class="page-wrapper">
-      <h1 class="heading-gradient" style="font-size:clamp(2rem,4vw,3rem);margin-bottom:1.5rem">Checkout</h1>
-
-      <!-- Steps -->
-      <div class="steps">
-        <div class="step-item">
-          <div class="step-circle active" id="step1-circle">1</div>
-          <span class="step-label active">Billing</span>
+      <h1 class="heading-gradient checkout-title">Checkout</h1>
+      <div class="steps" role="list" aria-label="Checkout steps">
+        <div class="step-item" role="listitem">
+          <div class="step-circle active" id="step1-circle" aria-current="step">1</div>
+          <span class="step-label active" id="step1-label">Billing</span>
         </div>
-        <div class="step-line" id="line1"></div>
-        <div class="step-item">
+        <div class="step-line" id="line1" aria-hidden="true"></div>
+        <div class="step-item" role="listitem">
           <div class="step-circle" id="step2-circle">2</div>
           <span class="step-label" id="step2-label">Payment</span>
         </div>
-        <div class="step-line" id="line2"></div>
-        <div class="step-item">
+        <div class="step-line" id="line2" aria-hidden="true"></div>
+        <div class="step-item" role="listitem">
           <div class="step-circle" id="step3-circle">3</div>
           <span class="step-label" id="step3-label">Confirm</span>
         </div>
       </div>
-
     </div>
   </div>
 
-  <div class="page-wrapper" style="padding-bottom:5rem">
-    <div id="checkout-body" style="display:grid;grid-template-columns:1fr 340px;gap:2.5rem;align-items:start">
+  <div class="page-wrapper">
+    <div class="checkout-grid" id="checkout-body">
 
-      <!-- ===== LEFT FORMS ===== -->
+      <!-- Forms -->
       <div>
-
         <!-- Billing -->
         <div class="form-card slide-in-up">
-          <h2>📋 Billing Information</h2>
+          <h2 class="form-card-title">📋 Billing Information</h2>
           <form id="billing-form" novalidate>
             <div class="form-row cols-2">
-              <label class="field"><span>First Name *</span><input class="input-base" type="text" name="fname" placeholder="John" required /></label>
-              <label class="field"><span>Last Name *</span><input class="input-base" type="text" name="lname" placeholder="Doe" required /></label>
+              <div class="field">
+                <label class="field-label" for="fname">First Name *</label>
+                <input class="input-base" id="fname" type="text" name="fname" placeholder="John" required aria-required="true" autocomplete="given-name" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="lname">Last Name *</label>
+                <input class="input-base" id="lname" type="text" name="lname" placeholder="Doe" required aria-required="true" autocomplete="family-name" />
+              </div>
             </div>
             <div class="form-row">
-              <label class="field"><span>Email Address *</span><input class="input-base" type="email" name="email" placeholder="john@example.com" required /></label>
+              <div class="field">
+                <label class="field-label" for="email">Email Address *</label>
+                <input class="input-base" id="email" type="email" name="email" placeholder="john@example.com" required aria-required="true" autocomplete="email" />
+              </div>
             </div>
             <div class="form-row">
-              <label class="field"><span>Phone Number</span><input class="input-base" type="tel" name="phone" placeholder="+1 555 000 0000" /></label>
+              <div class="field">
+                <label class="field-label" for="phone">Phone Number</label>
+                <input class="input-base" id="phone" type="tel" name="phone" placeholder="+1 555 000 0000" autocomplete="tel" />
+              </div>
             </div>
             <div class="form-row">
-              <label class="field"><span>Street Address *</span><input class="input-base" type="text" name="address" placeholder="123 Main Street" required /></label>
+              <div class="field">
+                <label class="field-label" for="address">Street Address *</label>
+                <input class="input-base" id="address" type="text" name="address" placeholder="123 Main Street" required aria-required="true" autocomplete="street-address" />
+              </div>
             </div>
             <div class="form-row cols-3">
-              <label class="field"><span>City *</span><input class="input-base" type="text" name="city" placeholder="New York" required /></label>
-              <label class="field"><span>State</span><input class="input-base" type="text" name="state" placeholder="NY" /></label>
-              <label class="field"><span>ZIP *</span><input class="input-base" type="text" name="zip" placeholder="10001" required /></label>
+              <div class="field">
+                <label class="field-label" for="city">City *</label>
+                <input class="input-base" id="city" type="text" name="city" placeholder="New York" required aria-required="true" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="state">State</label>
+                <input class="input-base" id="state" type="text" name="state" placeholder="NY" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="zip">ZIP Code *</label>
+                <input class="input-base" id="zip" type="text" name="zip" placeholder="10001" required aria-required="true" />
+              </div>
             </div>
             <div class="form-row">
-              <label class="field">
-                <span>Country *</span>
-                <select class="input-base" name="country" required>
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>United Kingdom</option>
-                  <option>Australia</option>
-                  <option>India</option>
-                  <option>Germany</option>
-                  <option>France</option>
+              <div class="field">
+                <label class="field-label" for="country">Country *</label>
+                <select class="input-base" id="country" name="country" required aria-required="true">
+                  <option>United States</option><option>Canada</option>
+                  <option>United Kingdom</option><option>Australia</option>
+                  <option>India</option><option>Germany</option><option>France</option>
                 </select>
-              </label>
+              </div>
             </div>
           </form>
         </div>
 
         <!-- Payment Method -->
         <div class="form-card slide-in-up" style="animation-delay:0.1s">
-          <h2>💳 Payment Method</h2>
-
-          <div class="pay-method selected" data-method="card" onclick="selectPayment('card')">
-            <input type="radio" name="pay" value="card" checked />
-            <span style="font-weight:600;font-size:0.9rem">Credit / Debit Card</span>
-            <span style="margin-left:auto;font-size:0.75rem;color:#6b7280">Visa · MC · Amex</span>
-          </div>
-          <div class="pay-method" data-method="paypal" onclick="selectPayment('paypal')">
-            <input type="radio" name="pay" value="paypal" />
-            <span style="font-weight:600;font-size:0.9rem">PayPal</span>
-          </div>
-          <div class="pay-method" data-method="apple" onclick="selectPayment('apple')">
-            <input type="radio" name="pay" value="apple" />
-            <span style="font-weight:600;font-size:0.9rem">Apple Pay</span>
-          </div>
-
-          <!-- Card fields (shown when "card" selected) -->
-          <div id="card-fields" style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border-dim)">
+          <h2 class="form-card-title">💳 Payment Method</h2>
+          <fieldset style="border:none;padding:0;margin:0">
+            <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a payment method</legend>
+            <label class="pay-method selected" id="pm-card" data-method="card">
+              <input type="radio" name="pay-method" value="card" checked aria-label="Pay by Credit or Debit Card" />
+              <span class="pay-method-name">Credit / Debit Card</span>
+              <span class="pay-method-hint">Visa · MC · Amex</span>
+            </label>
+            <label class="pay-method" id="pm-paypal" data-method="paypal">
+              <input type="radio" name="pay-method" value="paypal" aria-label="Pay with PayPal" />
+              <span class="pay-method-name">PayPal</span>
+            </label>
+            <label class="pay-method" id="pm-apple" data-method="apple">
+              <input type="radio" name="pay-method" value="apple" aria-label="Pay with Apple Pay" />
+              <span class="pay-method-name">Apple Pay</span>
+            </label>
+          </fieldset>
+          <div class="card-fields" id="card-fields">
             <div class="form-row">
-              <label class="field">
-                <span>Card Number</span>
-                <input class="input-base" id="card-num" type="text" placeholder="4532 1234 5678 9010" maxlength="19" style="font-family:'Space Mono',monospace;letter-spacing:0.1em" />
-              </label>
+              <div class="field">
+                <label class="field-label" for="card-num">Card Number</label>
+                <input class="input-base card-num-input" id="card-num" type="text" placeholder="4532 1234 5678 9010" maxlength="19" autocomplete="cc-number" aria-label="Card number" />
+              </div>
             </div>
             <div class="form-row cols-2">
-              <label class="field"><span>Expiry (MM/YY)</span><input class="input-base" id="card-exp" type="text" placeholder="08 / 27" maxlength="7" /></label>
-              <label class="field"><span>CVV</span><input class="input-base" id="card-cvv" type="password" placeholder="•••" maxlength="4" /></label>
+              <div class="field">
+                <label class="field-label" for="card-exp">Expiry (MM / YY)</label>
+                <input class="input-base" id="card-exp" type="text" placeholder="08 / 27" maxlength="7" autocomplete="cc-exp" aria-label="Card expiry date" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="card-cvv">CVV</label>
+                <input class="input-base" id="card-cvv" type="password" placeholder="•••" maxlength="4" autocomplete="cc-csc" aria-label="Card security code" />
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Shipping Method -->
+        <!-- Shipping -->
         <div class="form-card slide-in-up" style="animation-delay:0.2s">
-          <h2>🚚 Shipping Method</h2>
-
-          <div class="ship-option selected" id="ship-std" onclick="selectShipping('standard', 0)">
-            <input type="radio" name="ship" value="standard" checked />
-            <div style="flex:1">
-              <p style="font-weight:600;font-size:0.9rem">Standard Shipping</p>
-              <p style="font-size:0.75rem;color:#6b7280">5–7 business days</p>
-            </div>
-            <span style="font-weight:700;color:#4ade80">FREE</span>
-          </div>
-          <div class="ship-option" id="ship-exp" onclick="selectShipping('express', 9.99)">
-            <input type="radio" name="ship" value="express" />
-            <div style="flex:1">
-              <p style="font-weight:600;font-size:0.9rem">Express Shipping</p>
-              <p style="font-size:0.75rem;color:#6b7280">2–3 business days</p>
-            </div>
-            <span style="font-weight:700">$9.99</span>
-          </div>
-          <div class="ship-option" id="ship-over" onclick="selectShipping('overnight', 24.99)">
-            <input type="radio" name="ship" value="overnight" />
-            <div style="flex:1">
-              <p style="font-weight:600;font-size:0.9rem">Overnight Delivery</p>
-              <p style="font-size:0.75rem;color:#6b7280">Next business day</p>
-            </div>
-            <span style="font-weight:700">$24.99</span>
-          </div>
+          <h2 class="form-card-title">🚚 Shipping Method</h2>
+          <fieldset style="border:none;padding:0;margin:0">
+            <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Select a shipping method</legend>
+            <label class="ship-option selected" data-cost="0">
+              <input type="radio" name="ship-method" value="standard" checked aria-label="Standard Shipping, free, 5 to 7 business days" />
+              <div class="ship-info"><p class="ship-name">Standard Shipping</p><p class="ship-eta">5–7 business days</p></div>
+              <span class="ship-price-free">FREE</span>
+            </label>
+            <label class="ship-option" data-cost="9.99">
+              <input type="radio" name="ship-method" value="express" aria-label="Express Shipping, $9.99, 2 to 3 business days" />
+              <div class="ship-info"><p class="ship-name">Express Shipping</p><p class="ship-eta">2–3 business days</p></div>
+              <span class="ship-price">$9.99</span>
+            </label>
+            <label class="ship-option" data-cost="24.99">
+              <input type="radio" name="ship-method" value="overnight" aria-label="Overnight Delivery, $24.99, next business day" />
+              <div class="ship-info"><p class="ship-name">Overnight Delivery</p><p class="ship-eta">Next business day</p></div>
+              <span class="ship-price">$24.99</span>
+            </label>
+          </fieldset>
         </div>
-
       </div>
 
-      <!-- ===== ORDER SUMMARY SIDEBAR ===== -->
-      <div class="summary-sticky">
-        <h2 style="font-size:1.2rem;margin-bottom:1.25rem">Order Summary</h2>
+      <!-- Summary sidebar -->
+      <div class="summary-sticky" role="complementary" aria-label="Order summary">
+        <h2 class="summary-title">Order Summary</h2>
+        <div class="summary-items" id="summary-items" aria-label="Cart items"></div>
 
-        <!-- Items -->
-        <div id="summary-items" style="max-height:220px;overflow-y:auto;margin-bottom:1rem;padding-right:0.25rem"></div>
-
-        <!-- Totals -->
-        <div style="border-top:1px solid var(--border-dim);padding-top:0.5rem">
-          <div class="sum-row"><span style="color:#9ca3af">Subtotal</span><span id="pay-subtotal">$0.00</span></div>
-          <div class="sum-row" id="pay-discount-row" style="display:none"><span style="color:#9ca3af">Discount</span><span id="pay-discount" style="color:#4ade80">-$0.00</span></div>
-          <div class="sum-row"><span style="color:#9ca3af">Shipping</span><span id="pay-shipping">FREE</span></div>
-          <div class="sum-row"><span style="color:#9ca3af">Tax (10%)</span><span id="pay-tax">$0.00</span></div>
-          <div class="sum-row border-top" style="margin-top:0.5rem">
-            <span style="font-weight:700;font-size:1rem">Total</span>
-            <span id="pay-total" class="text-gradient" style="font-size:1.4rem;font-family:'Space Mono',monospace;font-weight:700">$0.00</span>
+        <div class="sum-rows">
+          <div class="sum-row"><span class="sum-label">Subtotal</span><span id="pay-subtotal">$0.00</span></div>
+          <div class="sum-row" id="pay-discount-row" style="display:none">
+            <span class="sum-label">Discount</span>
+            <span id="pay-discount" class="sum-discount-val">-$0.00</span>
           </div>
+          <div class="sum-row"><span class="sum-label">Shipping</span><span id="pay-shipping" class="sum-shipping-free">FREE</span></div>
+          <div class="sum-row"><span class="sum-label">Tax (10%)</span><span id="pay-tax">$0.00</span></div>
         </div>
 
-        <button id="place-order-btn" class="btn-primary" style="width:100%;margin-top:1.5rem;padding:0.9rem;font-size:0.95rem">
-          Place Order →
-        </button>
-        <p style="text-align:center;font-size:0.72rem;color:#6b7280;margin-top:0.75rem">🔒 Secure & encrypted checkout</p>
+        <div class="sum-total-row">
+          <span class="sum-total-label">Total</span>
+          <span id="pay-total" class="sum-total-value text-gradient">$0.00</span>
+        </div>
+
+        <button id="place-order-btn" class="btn-primary place-order-btn" type="button">Place Order →</button>
+        <p class="secure-note">🔒 Secure &amp; encrypted checkout</p>
       </div>
 
     </div>
   </div>
 
-  <!-- ===== ORDER CONFIRMATION ===== -->
-  <div id="confirm-section">
-    <div class="confirm-card" style="background:var(--bg-card);border:1px solid rgba(168,85,247,0.4);border-radius:1.5rem;padding:3.5rem;text-align:center;max-width:560px;width:100%">
-      <div style="width:80px;height:80px;background:linear-gradient(135deg,#16a34a,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+  <!-- Confirmation overlay -->
+  <div id="confirm-section" role="dialog" aria-modal="true" aria-labelledby="confirm-heading">
+    <div class="confirm-card">
+      <div class="confirm-icon" aria-hidden="true">
         <svg width="40" height="40" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h1 class="heading-gradient" style="font-size:2.5rem;margin-bottom:0.75rem">Order Confirmed!</h1>
-      <p style="color:#9ca3af;font-size:1rem;margin-bottom:2rem">Thank you for shopping with ToyVerse 🎁</p>
-
-      <div style="background:var(--bg-hover);border-radius:0.75rem;padding:1.25rem;margin-bottom:2rem">
-        <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.25rem">Order Number</p>
-        <p id="order-num" style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:#a855f7"></p>
+      <h1 class="heading-gradient confirm-title" id="confirm-heading">Order Confirmed!</h1>
+      <p class="confirm-sub">Thank you for shopping with ToyVerse 🎁</p>
+      <div class="confirm-order-box">
+        <p class="confirm-order-label">Order Number</p>
+        <p class="confirm-order-num" id="order-num"></p>
       </div>
-
-      <p style="color:#6b7280;font-size:0.875rem;margin-bottom:2rem;line-height:1.6">
-        A confirmation email has been sent. Your order will arrive in 5–7 business days.
-      </p>
-
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-        <a href="/" class="btn-primary">Return Home</a>
+      <p class="confirm-msg">A confirmation email has been sent. Your order will arrive in 5–7 business days.</p>
+      <div class="confirm-actions">
+        <a href="/index.html" class="btn-primary">Return Home</a>
         <a href="/pages/products.html" class="btn-outline">Continue Shopping</a>
       </div>
     </div>
@@ -344,125 +300,115 @@
     mountNavbar()
     mountFooter()
 
-    // ===== LOAD CHECKOUT DATA =====
-    const checkoutData = JSON.parse(localStorage.getItem('tv_checkout') || '{"cart":[],"discountRate":0}')
-    const cart         = checkoutData.cart || []
-    const discountRate = checkoutData.discountRate || 0
-    let extraShipping  = 0
+    // ── Load checkout data ──
+    const raw  = localStorage.getItem('tv_checkout')
+    const data = raw ? JSON.parse(raw) : { cart: [], discountRate: 0 }
+    const cart          = data.cart         || []
+    const discountRate  = data.discountRate || 0
+    let   extraShipping = 0
 
-    // Populate summary items
+    // Populate items list
     const itemsEl = document.getElementById('summary-items')
-    itemsEl.innerHTML = cart.map(item => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border-dim);gap:0.5rem">
-        <span style="font-size:1.25rem">${item.emoji}</span>
-        <span style="flex:1;font-size:0.8rem;line-height:1.3">${item.name}</span>
-        <span style="font-size:0.8rem;font-weight:600;white-space:nowrap">×${item.quantity} $${(item.price * item.quantity).toFixed(2)}</span>
-      </div>
-    `).join('') || '<p style="color:#6b7280;font-size:0.8rem">No items.</p>'
+    itemsEl.innerHTML = cart.length
+      ? cart.map(item => (
+          '<div class="summary-item">' +
+            '<span class="summary-item-emoji">' + item.emoji + '</span>' +
+            '<span class="summary-item-name">'  + item.name  + '</span>' +
+            '<span class="summary-item-price">\u00d7' + item.quantity + ' $' + (item.price * item.quantity).toFixed(2) + '</span>' +
+          '</div>'
+        )).join('')
+      : '<p style="color:#6b7280;font-size:0.8rem">No items in cart.</p>'
 
     function updateSummary() {
-      const t = calcTotals(cart, discountRate)
+      const t     = calcTotals(cart, discountRate)
       const total = t.afterDiscount + t.tax + extraShipping
-      document.getElementById('pay-subtotal').textContent = `$${t.subtotal.toFixed(2)}`
-      document.getElementById('pay-tax').textContent      = `$${t.tax.toFixed(2)}`
-      document.getElementById('pay-total').textContent    = `$${total.toFixed(2)}`
+
+      document.getElementById('pay-subtotal').textContent = '$' + t.subtotal.toFixed(2)
+      document.getElementById('pay-tax').textContent      = '$' + t.tax.toFixed(2)
+      document.getElementById('pay-total').textContent    = '$' + total.toFixed(2)
+
       const shEl = document.getElementById('pay-shipping')
-      shEl.textContent = extraShipping === 0 ? 'FREE' : `$${extraShipping.toFixed(2)}`
-      shEl.style.color  = extraShipping === 0 ? '#4ade80' : '#fff'
+      if (extraShipping === 0) { shEl.textContent = 'FREE'; shEl.className = 'sum-shipping-free' }
+      else { shEl.textContent = '$' + extraShipping.toFixed(2); shEl.className = 'sum-shipping-paid' }
+
       if (t.discountAmt > 0) {
         document.getElementById('pay-discount-row').style.display = 'flex'
-        document.getElementById('pay-discount').textContent = `-$${t.discountAmt.toFixed(2)}`
+        document.getElementById('pay-discount').textContent = '-$' + t.discountAmt.toFixed(2)
       }
     }
     updateSummary()
 
-    // ===== PAYMENT METHOD =====
-    window.selectPayment = (method) => {
-      document.querySelectorAll('.pay-method').forEach(el => {
-        el.classList.toggle('selected', el.dataset.method === method)
-        el.querySelector('input').checked = el.dataset.method === method
+    // Payment method toggle
+    document.querySelectorAll('input[name="pay-method"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.pay-method').forEach(el => el.classList.remove('selected'))
+        radio.closest('.pay-method').classList.add('selected')
+        document.getElementById('card-fields').style.display = radio.value === 'card' ? 'block' : 'none'
       })
-      document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none'
-    }
-
-    // ===== SHIPPING =====
-    window.selectShipping = (key, cost) => {
-      extraShipping = cost
-      document.querySelectorAll('.ship-option').forEach(el => el.classList.remove('selected'))
-      document.getElementById(`ship-${key === 'standard' ? 'std' : key === 'express' ? 'exp' : 'over'}`).classList.add('selected')
-      document.querySelector(`.ship-option[id*="${key === 'standard' ? 'std' : key === 'express' ? 'exp' : 'over'}"] input`).checked = true
-      updateSummary()
-    }
-
-    // ===== CARD NUMBER FORMATTING =====
-    document.getElementById('card-num')?.addEventListener('input', e => {
-      let v = e.target.value.replace(/\D/g, '').slice(0, 16)
-      e.target.value = v.replace(/(.{4})/g, '$1 ').trim()
     })
-    document.getElementById('card-exp')?.addEventListener('input', e => {
+
+    // Shipping selection
+    document.querySelectorAll('input[name="ship-method"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.ship-option').forEach(el => el.classList.remove('selected'))
+        radio.closest('.ship-option').classList.add('selected')
+        extraShipping = parseFloat(radio.closest('.ship-option').dataset.cost) || 0
+        updateSummary()
+      })
+    })
+
+    // Card number formatting
+    document.getElementById('card-num').addEventListener('input', e => {
+      const raw = e.target.value.replace(/\D/g, '').slice(0, 16)
+      e.target.value = raw.replace(/(.{4})/g, '$1 ').trim()
+    })
+    document.getElementById('card-exp').addEventListener('input', e => {
       let v = e.target.value.replace(/\D/g, '').slice(0, 4)
-      if (v.length >= 2) v = v.slice(0,2) + ' / ' + v.slice(2)
+      if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2)
       e.target.value = v
     })
 
-    // Step progress
+    // Step indicator
     function setStep(n) {
       for (let i = 1; i <= 3; i++) {
-        const c = document.getElementById(`step${i}-circle`)
-        if (i < n)  { c.classList.add('done');   c.classList.remove('active'); c.textContent = '✓' }
-        if (i === n) { c.classList.add('active'); c.classList.remove('done'); }
-        if (i > n)  { c.classList.remove('active','done'); }
+        const circle = document.getElementById('step' + i + '-circle')
+        const label  = document.getElementById('step' + i + '-label')
+        circle.classList.remove('active', 'done')
+        label.classList.remove('active')
+        if (i < n)  { circle.classList.add('done');   circle.textContent = '\u2713' }
+        if (i === n) { circle.classList.add('active'); label.classList.add('active') }
       }
       for (let l = 1; l <= 2; l++) {
-        document.getElementById(`line${l}`).classList.toggle('done', l < n)
+        document.getElementById('line' + l).classList.toggle('done', l < n)
       }
-      ;['step2-label','step3-label'].forEach((id,i) => {
-        const el = document.getElementById(id)
-        el.classList.toggle('active', n === i+2)
-      })
     }
 
-    // ===== PLACE ORDER =====
+    // Place order
     document.getElementById('place-order-btn').addEventListener('click', () => {
-      const billing = document.getElementById('billing-form')
-      const required = billing.querySelectorAll('[required]')
+      const form     = document.getElementById('billing-form')
+      const required = form.querySelectorAll('[required]')
       let valid = true
       required.forEach(inp => {
-        if (!inp.value.trim()) {
-          inp.style.borderColor = '#f87171'
-          valid = false
-        } else {
-          inp.style.borderColor = ''
-        }
+        const empty = !inp.value.trim()
+        inp.style.borderColor = empty ? '#f87171' : ''
+        if (empty) valid = false
       })
-      if (!valid) {
-        billing.scrollIntoView({ behavior: 'smooth' })
-        return
-      }
+      if (!valid) { form.scrollIntoView({ behavior: 'smooth' }); return }
 
       setStep(2)
       setTimeout(() => {
         setStep(3)
         setTimeout(() => {
-          // Show confirmation
           const orderNum = 'TVS-' + Date.now().toString().slice(-8)
           document.getElementById('order-num').textContent = orderNum
           document.getElementById('confirm-section').classList.add('show')
-          // Clear cart
+          document.getElementById('confirm-section').focus()
           localStorage.removeItem('tv_cart')
           localStorage.removeItem('tv_checkout')
           dispatchEvent(new Event('tv:cart-updated'))
         }, 600)
       }, 800)
     })
-
-    // Responsive grid
-    const body = document.getElementById('checkout-body')
-    function checkLayout() {
-      body.style.gridTemplateColumns = window.innerWidth < 768 ? '1fr' : '1fr 340px'
-    }
-    checkLayout()
-    window.addEventListener('resize', checkLayout)
   </script>
 
 </body>

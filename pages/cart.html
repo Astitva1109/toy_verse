@@ -6,6 +6,62 @@
   <title>Cart — ToyVerse</title>
   <link rel="stylesheet" href="/src/index.css" />
   <style>
+    /* ── Page header ── */
+    .cart-header {
+      padding-top: calc(72px + 2rem);
+      padding-bottom: 2rem;
+      background: linear-gradient(180deg, rgba(124, 58, 237, 0.08) 0%, transparent 100%);
+    }
+    .cart-title {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 0.5rem;
+    }
+    .cart-subtitle {
+      color: #6b7280;
+    }
+
+    /* ── Layout ── */
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
+      align-items: start;
+      padding-bottom: 5rem;
+    }
+    @media (max-width: 768px) {
+      .cart-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Empty cart state ── */
+    .empty-cart {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 1rem;
+    }
+    .empty-cart-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    .empty-cart-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .empty-cart-msg {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Cart items list ── */
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* ── Single cart item card ── */
     .cart-item {
       background: var(--bg-card);
       border: 1px solid var(--border-dim);
@@ -17,12 +73,12 @@
       transition: border-color 0.25s;
       animation: slideInUp 0.4s ease both;
     }
-    .cart-item:hover { border-color: rgba(168,85,247,0.4); }
+    .cart-item:hover { border-color: rgba(168, 85, 247, 0.4); }
 
     .cart-item-img {
       width: 88px;
       height: 88px;
-      background: linear-gradient(135deg,rgba(168,85,247,0.15),rgba(236,72,153,0.15));
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15));
       border-radius: 0.75rem;
       display: flex;
       align-items: center;
@@ -31,6 +87,52 @@
       flex-shrink: 0;
     }
 
+    .cart-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .cart-item-name {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+      flex-shrink: 0;
+      transition: color 0.2s;
+      padding: 0.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .remove-btn:hover { color: #f87171; }
+
+    .cart-item-cat {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .cart-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* ── Quantity control ── */
     .qty-control {
       display: inline-flex;
       align-items: center;
@@ -52,9 +154,25 @@
       transition: background 0.2s, color 0.2s;
       font-family: 'Poppins', sans-serif;
     }
-    .qty-btn:hover { background: rgba(168,85,247,0.2); color: #fff; }
-    .qty-val { width: 42px; text-align: center; font-weight: 700; font-size: 0.95rem; }
+    .qty-btn:hover { background: rgba(168, 85, 247, 0.2); color: #fff; }
+    .qty-val {
+      width: 42px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
 
+    .item-price-wrap { text-align: right; }
+    .item-unit-price {
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+    .item-line-price {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    /* ── Summary sidebar ── */
     .summary-box {
       background: var(--bg-card);
       border: 1px solid var(--border-dim);
@@ -63,6 +181,84 @@
       position: sticky;
       top: calc(72px + 1.5rem);
     }
+    .summary-title {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Promo code ── */
+    .promo-wrap { margin-bottom: 1.25rem; }
+    .promo-input-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .promo-text-input {
+      flex: 1;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    .promo-apply-btn {
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .promo-applied-row {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(74, 222, 128, 0.08);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 0.5rem;
+      padding: 0.55rem 0.85rem;
+    }
+    .promo-applied-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .promo-check-icon {
+      color: #4ade80;
+      font-size: 1rem;
+    }
+    .promo-badge-text {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #4ade80;
+    }
+    .promo-remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: color 0.2s, background 0.2s;
+      font-family: 'Poppins', sans-serif;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.25rem;
+    }
+    .promo-remove-btn:hover {
+      color: #f87171;
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .promo-hint {
+      font-size: 0.72rem;
+      color: #6b7280;
+      margin-top: 0.4rem;
+    }
+    .promo-msg {
+      font-size: 0.78rem;
+      margin-top: 0.4rem;
+      min-height: 1rem;
+    }
+
+    /* ── Summary rows ── */
+    .summary-rows {
+      border-top: 1px solid var(--border-dim);
+      padding-top: 0.5rem;
+    }
     .summary-row {
       display: flex;
       justify-content: space-between;
@@ -70,102 +266,167 @@
       padding: 0.6rem 0;
     }
     .summary-row + .summary-row { border-top: 1px solid var(--border-dim); }
+    .summary-row-label {
+      color: #9ca3af;
+      font-size: 0.875rem;
+    }
+    .summary-row-value { font-weight: 600; }
+    .summary-row-free  { font-weight: 600; color: #4ade80; }
+    .summary-row-discount { color: #4ade80; font-weight: 600; }
+
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 0.6rem;
+      border-top: 2px solid var(--border-mid);
+      margin-top: 0.5rem;
+    }
+    .summary-total-label { font-size: 1.05rem; font-weight: 700; }
+    .summary-total-value {
+      font-size: 1.5rem;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+    }
+
+    /* ── CTA buttons ── */
+    .checkout-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.9rem;
+      font-size: 0.95rem;
+    }
+    .continue-btn {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      text-align: center;
+      display: block;
+    }
+
+    /* ── Trust badges ── */
+    .trust-list {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .trust-item {
+      font-size: 0.75rem;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
   </style>
 </head>
 <body>
 
   <div id="app-navbar"></div>
 
-  <!-- Header -->
-  <div style="padding-top:calc(72px + 2rem);padding-bottom:2rem;background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%)">
+  <!-- ── Page header ── -->
+  <div class="cart-header">
     <div class="page-wrapper">
-      <h1 class="heading-gradient" style="font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:0.5rem">Shopping Cart</h1>
-      <p style="color:#6b7280">Review your items before checkout.</p>
+      <h1 class="heading-gradient cart-title">Shopping Cart</h1>
+      <p class="cart-subtitle">Review your items before checkout.</p>
     </div>
   </div>
 
-  <div class="page-wrapper" style="padding-bottom:5rem">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:2.5rem;align-items:start" id="cart-layout">
+  <!-- ── Main layout ── -->
+  <div class="page-wrapper">
+    <div class="cart-layout" id="cart-layout">
 
-      <!-- ===== CART ITEMS ===== -->
+      <!-- ═══ LEFT: CART ITEMS ═══ -->
       <div>
         <!-- Empty state -->
-        <div id="empty-cart" style="display:none;text-align:center;padding:4rem 2rem;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:1rem">
-          <div style="font-size:3.5rem;margin-bottom:1rem">🛒</div>
-          <h3 style="font-size:1.4rem;margin-bottom:0.5rem">Your cart is empty</h3>
-          <p style="color:#6b7280;margin-bottom:1.5rem">Start exploring and add something fun!</p>
+        <div class="empty-cart" id="empty-cart" role="status">
+          <div class="empty-cart-icon" aria-hidden="true">🛒</div>
+          <h3 class="empty-cart-title">Your cart is empty</h3>
+          <p class="empty-cart-msg">Start exploring and add something fun!</p>
           <a href="/pages/products.html" class="btn-primary">Browse Products</a>
         </div>
 
         <!-- Items list -->
-        <div id="cart-list" style="display:flex;flex-direction:column;gap:1rem"></div>
+        <div class="cart-list" id="cart-list" aria-label="Cart items" aria-live="polite"></div>
       </div>
 
-      <!-- ===== ORDER SUMMARY ===== -->
-      <div class="summary-box">
-        <h2 style="font-size:1.3rem;margin-bottom:1.5rem">Order Summary</h2>
+      <!-- ═══ RIGHT: ORDER SUMMARY ═══ -->
+      <div class="summary-box" role="complementary" aria-label="Order summary">
+        <h2 class="summary-title">Order Summary</h2>
 
-        <!-- Promo -->
-        <div style="margin-bottom:1.25rem">
-          <!-- Input row -->
-          <div id="promo-input-row" style="display:flex;gap:0.5rem">
-            <input class="input-base" type="text" id="promo-input" placeholder="Promo code (e.g. SAVE10)" style="flex:1;font-size:0.8rem;text-transform:uppercase" />
-            <button id="apply-promo" class="btn-outline" style="padding:0.6rem 1rem;font-size:0.8rem;white-space:nowrap">Apply</button>
+        <!-- Promo code -->
+        <div class="promo-wrap">
+          <!-- Input state -->
+          <div class="promo-input-row" id="promo-input-row">
+            <label for="promo-input" class="sr-only"
+              style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">
+              Promo code
+            </label>
+            <input class="input-base promo-text-input" type="text"
+              id="promo-input" placeholder="Promo code (e.g. SAVE10)"
+              autocomplete="off" aria-label="Promo code" />
+            <button class="btn-outline promo-apply-btn" id="apply-promo" type="button">
+              Apply
+            </button>
           </div>
-          <!-- Applied badge row (hidden by default) -->
-          <div id="promo-applied-row" style="display:none;align-items:center;justify-content:space-between;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.3);border-radius:0.5rem;padding:0.55rem 0.85rem">
-            <div style="display:flex;align-items:center;gap:0.5rem">
-              <span style="color:#4ade80;font-size:1rem">✓</span>
-              <span id="promo-badge-text" style="font-size:0.8rem;font-weight:600;color:#4ade80"></span>
+
+          <!-- Applied state -->
+          <div class="promo-applied-row" id="promo-applied-row" role="status" aria-live="polite">
+            <div class="promo-applied-left">
+              <span class="promo-check-icon" aria-hidden="true">✓</span>
+              <span class="promo-badge-text" id="promo-badge-text"></span>
             </div>
-            <button id="remove-promo" title="Remove promo code" style="background:none;border:none;cursor:pointer;color:#6b7280;font-size:0.8rem;font-weight:600;transition:color 0.2s;font-family:'Poppins',sans-serif;padding:0.1rem 0.4rem;border-radius:0.25rem"
-              onmouseover="this.style.color='#f87171';this.style.background='rgba(248,113,113,0.1)'"
-              onmouseout="this.style.color='#6b7280';this.style.background='none'">
+            <button class="promo-remove-btn" id="remove-promo"
+              type="button" aria-label="Remove promo code">
               ✕ Remove
             </button>
           </div>
-          <p style="font-size:0.72rem;color:#6b7280;margin-top:0.4rem">Try: SAVE10 · WELCOME20 · HOLIDAY25</p>
-          <p id="promo-msg" style="font-size:0.78rem;margin-top:0.4rem;min-height:1rem"></p>
+
+          <p class="promo-hint">Try: SAVE10 · WELCOME20 · HOLIDAY25</p>
+          <p class="promo-msg" id="promo-msg" role="alert" aria-live="polite"></p>
         </div>
 
-        <!-- Rows -->
-        <div style="border-top:1px solid var(--border-dim);padding-top:0.5rem">
+        <!-- Summary rows -->
+        <div class="summary-rows">
           <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Subtotal</span>
-            <span id="sum-subtotal" style="font-weight:600">$0.00</span>
+            <span class="summary-row-label">Subtotal</span>
+            <span class="summary-row-value" id="sum-subtotal">$0.00</span>
           </div>
-          <div class="summary-row" id="discount-row" style="display:none!important">
-            <span style="color:#9ca3af;font-size:0.875rem">Discount</span>
-            <span id="sum-discount" style="color:#4ade80;font-weight:600">-$0.00</span>
-          </div>
-          <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Shipping</span>
-            <span id="sum-shipping" style="font-weight:600;color:#4ade80">FREE</span>
+          <div class="summary-row" id="discount-row" style="display:none">
+            <span class="summary-row-label">Discount</span>
+            <span class="summary-row-discount" id="sum-discount">-$0.00</span>
           </div>
           <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Tax (10%)</span>
-            <span id="sum-tax" style="font-weight:600">$0.00</span>
+            <span class="summary-row-label">Shipping</span>
+            <span class="summary-row-free" id="sum-shipping">FREE</span>
           </div>
-          <div class="summary-row" style="border-top:2px solid var(--border-mid)!important;margin-top:0.5rem;padding-top:1rem">
-            <span style="font-size:1.05rem;font-weight:700">Total</span>
-            <span id="sum-total" class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">$0.00</span>
+          <div class="summary-row">
+            <span class="summary-row-label">Tax (10%)</span>
+            <span class="summary-row-value" id="sum-tax">$0.00</span>
           </div>
+        </div>
+
+        <div class="summary-total-row">
+          <span class="summary-total-label">Total</span>
+          <span class="summary-total-value text-gradient" id="sum-total">$0.00</span>
         </div>
 
         <!-- CTA -->
-        <button id="checkout-btn" class="btn-primary" style="width:100%;margin-top:1.5rem;padding:0.9rem;font-size:0.95rem" disabled>
+        <button class="btn-primary checkout-btn" id="checkout-btn"
+          type="button" disabled aria-disabled="true">
           Proceed to Checkout
         </button>
-        <a href="/pages/products.html" class="btn-outline" style="width:100%;margin-top:0.75rem;padding:0.75rem;font-size:0.875rem;text-align:center;display:block">
+        <a href="/pages/products.html" class="btn-outline continue-btn">
           Continue Shopping
         </a>
 
-        <!-- Trust -->
-        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem">
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">🔒 SSL-encrypted checkout</p>
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">📦 Free shipping over $50</p>
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">↩️ 30-day hassle-free returns</p>
-        </div>
+        <!-- Trust badges -->
+        <ul class="trust-list" aria-label="Shopping guarantees">
+          <li class="trust-item">🔒 SSL-encrypted checkout</li>
+          <li class="trust-item">📦 Free shipping over $50</li>
+          <li class="trust-item">↩️ 30-day hassle-free returns</li>
+        </ul>
       </div>
 
     </div>
@@ -175,8 +436,8 @@
 
   <script type="module">
     import {
-      getCart, saveCart, getWishlist, calcTotals, promoCodes,
-      mountNavbar, mountFooter
+      getCart, saveCart, calcTotals, promoCodes,
+      mountNavbar, mountFooter,
     } from '../src/data/data.js'
 
     mountNavbar()
@@ -184,69 +445,75 @@
 
     let discountRate = 0
 
+    // ── Render full cart ──
     function render() {
-      const cart = getCart()
-      const empty   = document.getElementById('empty-cart')
-      const list    = document.getElementById('cart-list')
+      const cart        = getCart()
+      const emptyEl     = document.getElementById('empty-cart')
+      const listEl      = document.getElementById('cart-list')
       const checkoutBtn = document.getElementById('checkout-btn')
 
       if (!cart.length) {
-        empty.style.display = 'block'
-        list.innerHTML = ''
-        checkoutBtn.disabled = true
-        checkoutBtn.style.opacity = '0.45'
-        checkoutBtn.style.cursor  = 'not-allowed'
+        emptyEl.style.display = 'block'
+        listEl.innerHTML      = ''
+        checkoutBtn.disabled  = true
+        checkoutBtn.setAttribute('aria-disabled', 'true')
         updateSummary(cart)
         return
       }
 
-      empty.style.display = 'none'
-      checkoutBtn.disabled = false
-      checkoutBtn.style.opacity = '1'
-      checkoutBtn.style.cursor  = 'pointer'
+      emptyEl.style.display = 'none'
+      checkoutBtn.disabled  = false
+      checkoutBtn.removeAttribute('aria-disabled')
 
-      list.innerHTML = cart.map((item, idx) => `
-        <div class="cart-item" style="animation-delay:${idx * 0.07}s">
-          <div class="cart-item-img">${item.emoji}</div>
+      listEl.innerHTML = cart.map((item, idx) => (
+        '<div class="cart-item" style="animation-delay:' + (idx * 0.07) + 's">' +
 
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.35rem">
-              <h3 style="font-size:0.95rem;line-height:1.4">${item.name}</h3>
-              <button class="remove-btn" data-id="${item.id}" title="Remove" style="background:none;border:none;cursor:pointer;color:#6b7280;flex-shrink:0;transition:color 0.2s;padding:0.2rem"
-                onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='#6b7280'">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-            <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.75rem">${item.category}</p>
+          '<div class="cart-item-img" aria-hidden="true">' + item.emoji + '</div>' +
 
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
-              <div class="qty-control">
-                <button class="qty-btn dec-btn" data-id="${item.id}">−</button>
-                <span class="qty-val">${item.quantity}</span>
-                <button class="qty-btn inc-btn" data-id="${item.id}">+</button>
-              </div>
-              <div style="text-align:right">
-                <p style="font-size:0.7rem;color:#6b7280">$${item.price.toFixed(2)} each</p>
-                <p style="font-weight:700;font-size:1.05rem">$${(item.price * item.quantity).toFixed(2)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('')
+          '<div class="cart-item-body">' +
+            '<div class="cart-item-top">' +
+              '<h3 class="cart-item-name">' + item.name + '</h3>' +
+              '<button class="remove-btn" data-id="' + item.id + '"' +
+                ' type="button" aria-label="Remove ' + item.name + ' from cart">' +
+                '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">' +
+                  '<path d="M18 6L6 18M6 6l12 12"/>' +
+                '</svg>' +
+              '</button>' +
+            '</div>' +
 
-      // bind qty buttons
-      list.querySelectorAll('.inc-btn').forEach(btn =>
+            '<p class="cart-item-cat">' + item.category + '</p>' +
+
+            '<div class="cart-item-bottom">' +
+              '<div class="qty-control" role="group" aria-label="Quantity for ' + item.name + '">' +
+                '<button class="qty-btn dec-btn" data-id="' + item.id + '"' +
+                  ' type="button" aria-label="Decrease quantity">−</button>' +
+                '<span class="qty-val" aria-live="polite">' + item.quantity + '</span>' +
+                '<button class="qty-btn inc-btn" data-id="' + item.id + '"' +
+                  ' type="button" aria-label="Increase quantity">+</button>' +
+              '</div>' +
+              '<div class="item-price-wrap">' +
+                '<p class="item-unit-price">$' + item.price.toFixed(2) + ' each</p>' +
+                '<p class="item-line-price">$' + (item.price * item.quantity).toFixed(2) + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>'
+      )).join('')
+
+      // bind events
+      listEl.querySelectorAll('.inc-btn').forEach(btn =>
         btn.addEventListener('click', () => changeQty(Number(btn.dataset.id), 1)))
-      list.querySelectorAll('.dec-btn').forEach(btn =>
+      listEl.querySelectorAll('.dec-btn').forEach(btn =>
         btn.addEventListener('click', () => changeQty(Number(btn.dataset.id), -1)))
-      list.querySelectorAll('.remove-btn').forEach(btn =>
+      listEl.querySelectorAll('.remove-btn').forEach(btn =>
         btn.addEventListener('click', () => removeItem(Number(btn.dataset.id))))
 
       updateSummary(cart)
     }
 
     function changeQty(id, delta) {
-      let cart = getCart()
+      let cart  = getCart()
       const item = cart.find(i => i.id === id)
       if (!item) return
       item.quantity += delta
@@ -260,42 +527,51 @@
       render()
     }
 
+    // ── Update summary totals ──
     function updateSummary(cart) {
       const t = calcTotals(cart, discountRate)
-      document.getElementById('sum-subtotal').textContent = `$${t.subtotal.toFixed(2)}`
-      document.getElementById('sum-tax').textContent      = `$${t.tax.toFixed(2)}`
-      document.getElementById('sum-total').textContent    = `$${t.total.toFixed(2)}`
+
+      document.getElementById('sum-subtotal').textContent = '$' + t.subtotal.toFixed(2)
+      document.getElementById('sum-tax').textContent      = '$' + t.tax.toFixed(2)
+      document.getElementById('sum-total').textContent    = '$' + t.total.toFixed(2)
 
       const shEl = document.getElementById('sum-shipping')
-      shEl.textContent = t.shipping === 0 ? 'FREE' : `$${t.shipping.toFixed(2)}`
-      shEl.style.color  = t.shipping === 0 ? '#4ade80' : '#fff'
+      if (t.shipping === 0) {
+        shEl.textContent = 'FREE'
+        shEl.className   = 'summary-row-free'
+      } else {
+        shEl.textContent = '$' + t.shipping.toFixed(2)
+        shEl.className   = 'summary-row-value'
+      }
 
       const discRow = document.getElementById('discount-row')
       if (t.discountAmt > 0) {
         discRow.style.display = 'flex'
-        document.getElementById('sum-discount').textContent = `-$${t.discountAmt.toFixed(2)}`
+        document.getElementById('sum-discount').textContent = '-$' + t.discountAmt.toFixed(2)
       } else {
         discRow.style.display = 'none'
       }
     }
 
-    // ===== PROMO =====
+    // ── Promo: show applied state ──
     function showAppliedState(code, rate) {
       discountRate = rate
       document.getElementById('promo-input-row').style.display   = 'none'
       document.getElementById('promo-applied-row').style.display = 'flex'
-      document.getElementById('promo-badge-text').textContent    = `"${code}" — ${(rate*100).toFixed(0)}% off applied!`
-      document.getElementById('promo-msg').textContent           = ''
+      document.getElementById('promo-badge-text').textContent    =
+        '"' + code + '" \u2014 ' + (rate * 100).toFixed(0) + '% off applied!'
+      document.getElementById('promo-msg').textContent = ''
       updateSummary(getCart())
     }
 
+    // ── Promo: reset ──
     function resetPromo() {
       discountRate = 0
       document.getElementById('promo-input-row').style.display   = 'flex'
       document.getElementById('promo-applied-row').style.display = 'none'
       document.getElementById('promo-input').value               = ''
-      document.getElementById('promo-input').focus()
       document.getElementById('promo-msg').textContent           = ''
+      document.getElementById('promo-input').focus()
       updateSummary(getCart())
     }
 
@@ -318,30 +594,21 @@
       }
     })
 
-    // Allow pressing Enter in promo input
     document.getElementById('promo-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') document.getElementById('apply-promo').click()
     })
 
-    // ===== CHECKOUT =====
+    // ── Checkout ──
     document.getElementById('checkout-btn').addEventListener('click', () => {
       const cart = getCart()
       if (!cart.length) return
       localStorage.setItem('tv_checkout', JSON.stringify({ cart, discountRate }))
-      window.location.href = '/pages/payment.html'
+      window.location.href = '/pages/payments.html'
     })
 
-    // ===== INIT =====
+    // ── Init ──
     render()
     window.addEventListener('tv:cart-updated', render)
-
-    // Responsive: stack layout on mobile
-    const layout = document.getElementById('cart-layout')
-    function checkLayout() {
-      layout.style.gridTemplateColumns = window.innerWidth < 768 ? '1fr' : '1fr 360px'
-    }
-    checkLayout()
-    window.addEventListener('resize', checkLayout)
   </script>
 
 </body>

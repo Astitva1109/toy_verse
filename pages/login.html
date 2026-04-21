@@ -3,346 +3,631 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cart — ToyVerse</title>
+  <title>Login — ToyVerse</title>
   <link rel="stylesheet" href="/src/index.css" />
   <style>
-    .cart-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-dim);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-      transition: border-color 0.25s;
-      animation: slideInUp 0.4s ease both;
+    /* ── Split layout ── */
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
-    .cart-item:hover { border-color: rgba(168,85,247,0.4); }
+    @media (max-width: 900px) {
+      .auth-page                { grid-template-columns: 1fr; }
+      .auth-visual              { display: none; }
+      .mobile-logo              { display: flex !important; }
+    }
 
-    .cart-item-img {
-      width: 88px;
-      height: 88px;
-      background: linear-gradient(135deg,rgba(168,85,247,0.15),rgba(236,72,153,0.15));
-      border-radius: 0.75rem;
+    /* ── Left visual panel ── */
+    .auth-visual {
+      background: linear-gradient(145deg, #1a0a2e 0%, #0d1f3c 40%, #0f0f0f 100%);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 2.5rem;
-      flex-shrink: 0;
-    }
-
-    .qty-control {
-      display: inline-flex;
-      align-items: center;
-      background: var(--bg-hover);
-      border-radius: 0.5rem;
+      padding: 3rem;
+      position: relative;
       overflow: hidden;
     }
-    .qty-btn {
-      background: none;
-      border: none;
-      color: #d1d5db;
-      width: 36px;
-      height: 36px;
-      cursor: pointer;
-      font-size: 1.1rem;
+    .auth-visual::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%);
+      top: -100px; left: -100px;
+    }
+    .auth-visual::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+    }
+    .visual-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .visual-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      margin-bottom: 3rem;
+    }
+    .visual-emoji {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 40px rgba(168,85,247,0.6));
+      display: block;
+    }
+    .visual-title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .visual-subtitle {
+      color: #9ca3af;
+      line-height: 1.7;
+      max-width: 320px;
+      font-size: 0.9rem;
+    }
+    .perk-list {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      text-align: left;
+      width: 100%;
+      max-width: 300px;
+    }
+    .perk-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.6rem;
+      padding: 0.75rem 1rem;
+    }
+    .perk-icon { font-size: 1.2rem; }
+    .perk-text { font-size: 0.82rem; color: #d1d5db; }
+
+    /* ── Right form panel ── */
+    .auth-form-panel {
+      background: var(--bg-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s, color 0.2s;
-      font-family: 'Poppins', sans-serif;
+      padding: 2rem;
+      min-height: 100vh;
     }
-    .qty-btn:hover { background: rgba(168,85,247,0.2); color: #fff; }
-    .qty-val { width: 42px; text-align: center; font-weight: 700; font-size: 0.95rem; }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+    }
+    .mobile-logo {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+    }
+    .auth-heading {
+      font-size: 1.9rem;
+      margin-bottom: 0.35rem;
+    }
+    .auth-sub {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+    .auth-sub a {
+      color: #a855f7;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .auth-sub a:hover { color: #ec4899; }
 
-    .summary-box {
+    /* ── Social buttons ── */
+    .social-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .btn-social {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
       background: var(--bg-card);
       border: 1px solid var(--border-dim);
-      border-radius: 1rem;
-      padding: 2rem;
-      position: sticky;
-      top: calc(72px + 1.5rem);
+      border-radius: 0.6rem;
+      padding: 0.75rem;
+      color: #d1d5db;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      font-family: 'Poppins', sans-serif;
+      text-decoration: none;
     }
-    .summary-row {
+    .btn-social:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168,85,247,0.06);
+      transform: translateY(-1px);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-dim);
+    }
+    .divider-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── Form fields ── */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field-row-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.6rem 0;
     }
-    .summary-row + .summary-row { border-top: 1px solid var(--border-dim); }
+    .field-lbl {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #9ca3af;
+    }
+    .forgot-link {
+      font-size: 0.75rem;
+      color: #a855f7;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .forgot-link:hover { color: #ec4899; }
+
+    /* ── Input with icon wrapper ── */
+    .input-wrap {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrap .input-base { padding-left: 2.6rem; }
+    .input-with-toggle { padding-right: 2.8rem !important; }
+    .toggle-pw-btn {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .toggle-pw-btn:hover { color: #fff; }
+
+    /* ── Field error ── */
+    .field-error {
+      font-size: 0.72rem;
+      color: #f87171;
+      min-height: 1rem;
+      display: block;
+    }
+
+    /* ── Remember me ── */
+    .remember-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .remember-row input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--accent-purple);
+      cursor: pointer;
+    }
+    .remember-label {
+      font-size: 0.82rem;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+
+    /* ── Submit btn ── */
+    .submit-btn {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+      position: relative;
+    }
+    .btn-spinner {
+      display: none;
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ── Demo hint box ── */
+    .demo-hint {
+      margin-top: 1.5rem;
+      background: rgba(168,85,247,0.07);
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 0.6rem;
+      padding: 0.85rem 1rem;
+    }
+    .demo-hint-title {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .demo-hint-row {
+      font-size: 0.78rem;
+      color: #d1d5db;
+    }
+    .demo-code { color: #a855f7; }
+
+    /* ── Shake animation ── */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+
+    /* ── Spin ── */
+    @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+    .spinning { animation: spin 0.8s linear infinite; }
+
+    /* ── Orbs ── */
+    @keyframes orbFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-20px) scale(1.05); }
+    }
+    .orb {
+      border-radius: 50%;
+      position: absolute;
+      filter: blur(40px);
+      opacity: 0.35;
+      animation: orbFloat 6s ease-in-out infinite;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 999;
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      animation: slideInUp 0.4s ease;
+      max-width: 320px;
+    }
+    .toast-icon { font-size: 1.25rem; }
+    .toast-msg  { font-size: 0.875rem; color: #d1d5db; }
   </style>
 </head>
 <body>
 
-  <div id="app-navbar"></div>
+<div class="auth-page">
 
-  <!-- Header -->
-  <div style="padding-top:calc(72px + 2rem);padding-bottom:2rem;background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%)">
-    <div class="page-wrapper">
-      <h1 class="heading-gradient" style="font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:0.5rem">Shopping Cart</h1>
-      <p style="color:#6b7280">Review your items before checkout.</p>
+  <!-- ═══ LEFT VISUAL ═══ -->
+  <div class="auth-visual" aria-hidden="true">
+    <div class="orb width:280px;height:280px;background:#7c3aed;top:5%;left:10%;animation-delay:0s"></div>
+    <div class="orb width:200px;height:200px;background:#db2777;bottom:15%;right:8%;animation-delay:-3s"></div>
+    <div class="orb width:150px;height:150px;background:#0891b2;top:50%;left:50%;animation-delay:-1.5s"></div>
+
+    <div class="visual-content">
+      <a href="/index.html" class="visual-logo">
+        <svg width="32" height="32" fill="none" stroke="#a855f7" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+        </svg>
+        <span class="heading-gradient font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700">ToyVerse</span>
+      </a>
+
+      <span class="visual-emoji">🎁</span>
+
+      <h2 class="visual-title">
+        Welcome back to<br><span class="text-gradient">ToyVerse</span>
+      </h2>
+      <p class="visual-subtitle">
+        Sign in to access your orders, wishlist, and exclusive member deals.
+      </p>
+
+      <ul class="perk-list" aria-label="Member benefits">
+        <li class="perk-item">
+          <span class="perk-icon">📦</span>
+          <span class="perk-text">Track your orders in real-time</span>
+        </li>
+        <li class="perk-item">
+          <span class="perk-icon">❤️</span>
+          <span class="perk-text">Save items to your wishlist</span>
+        </li>
+        <li class="perk-item">
+          <span class="perk-icon">🎉</span>
+          <span class="perk-text">Exclusive member discounts</span>
+        </li>
+      </ul>
     </div>
   </div>
 
-  <div class="page-wrapper" style="padding-bottom:5rem">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:2.5rem;align-items:start" id="cart-layout">
+  <!-- ═══ RIGHT FORM ═══ -->
+  <main class="auth-form-panel">
+    <div class="auth-card slide-in-up">
 
-      <!-- ===== CART ITEMS ===== -->
-      <div>
-        <!-- Empty state -->
-        <div id="empty-cart" style="display:none;text-align:center;padding:4rem 2rem;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:1rem">
-          <div style="font-size:3.5rem;margin-bottom:1rem">🛒</div>
-          <h3 style="font-size:1.4rem;margin-bottom:0.5rem">Your cart is empty</h3>
-          <p style="color:#6b7280;margin-bottom:1.5rem">Start exploring and add something fun!</p>
-          <a href="/pages/products.html" class="btn-primary">Browse Products</a>
-        </div>
+      <!-- Mobile logo -->
+      <a href="/index.html" class="mobile-logo" aria-label="ToyVerse Home">
+        <span class="heading-gradient font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700">ToyVerse</span>
+      </a>
 
-        <!-- Items list -->
-        <div id="cart-list" style="display:flex;flex-direction:column;gap:1rem"></div>
+      <h1 class="auth-heading">Sign in</h1>
+      <p class="auth-sub">
+        Don't have an account?
+        <a href="/pages/signup.html">Create one →</a>
+      </p>
+
+      <!-- Social logins -->
+      <div class="social-btns">
+        <button class="btn-social" type="button" id="google-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <button class="btn-social" type="button" id="github-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          Continue with GitHub
+        </button>
       </div>
 
-      <!-- ===== ORDER SUMMARY ===== -->
-      <div class="summary-box">
-        <h2 style="font-size:1.3rem;margin-bottom:1.5rem">Order Summary</h2>
+      <div class="divider"><span class="divider-text">or sign in with email</span></div>
 
-        <!-- Promo -->
-        <div style="margin-bottom:1.25rem">
-          <!-- Input row -->
-          <div id="promo-input-row" style="display:flex;gap:0.5rem">
-            <input class="input-base" type="text" id="promo-input" placeholder="Promo code (e.g. SAVE10)" style="flex:1;font-size:0.8rem;text-transform:uppercase" />
-            <button id="apply-promo" class="btn-outline" style="padding:0.6rem 1rem;font-size:0.8rem;white-space:nowrap">Apply</button>
+      <!-- Login form -->
+      <form class="login-form" id="login-form" novalidate>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label class="field-lbl" for="login-email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <input class="input-base" type="email" id="login-email"
+              placeholder="john@example.com" autocomplete="email"
+              aria-required="true" aria-describedby="email-error" />
           </div>
-          <!-- Applied badge row (hidden by default) -->
-          <div id="promo-applied-row" style="display:none;align-items:center;justify-content:space-between;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.3);border-radius:0.5rem;padding:0.55rem 0.85rem">
-            <div style="display:flex;align-items:center;gap:0.5rem">
-              <span style="color:#4ade80;font-size:1rem">✓</span>
-              <span id="promo-badge-text" style="font-size:0.8rem;font-weight:600;color:#4ade80"></span>
-            </div>
-            <button id="remove-promo" title="Remove promo code" style="background:none;border:none;cursor:pointer;color:#6b7280;font-size:0.8rem;font-weight:600;transition:color 0.2s;font-family:'Poppins',sans-serif;padding:0.1rem 0.4rem;border-radius:0.25rem"
-              onmouseover="this.style.color='#f87171';this.style.background='rgba(248,113,113,0.1)'"
-              onmouseout="this.style.color='#6b7280';this.style.background='none'">
-              ✕ Remove
+          <span class="field-error" id="email-error" role="alert"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <div class="field-row-header">
+            <label class="field-lbl" for="login-password">Password</label>
+            <a href="#" class="forgot-link" id="forgot-link">Forgot password?</a>
+          </div>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </span>
+            <input class="input-base input-with-toggle" type="password" id="login-password"
+              placeholder="Enter your password" autocomplete="current-password"
+              aria-required="true" aria-describedby="password-error" />
+            <button type="button" class="toggle-pw-btn" id="toggle-pw-btn"
+              aria-label="Show password">
+              <svg id="eye-icon" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
             </button>
           </div>
-          <p style="font-size:0.72rem;color:#6b7280;margin-top:0.4rem">Try: SAVE10 · WELCOME20 · HOLIDAY25</p>
-          <p id="promo-msg" style="font-size:0.78rem;margin-top:0.4rem;min-height:1rem"></p>
+          <span class="field-error" id="password-error" role="alert"></span>
         </div>
 
-        <!-- Rows -->
-        <div style="border-top:1px solid var(--border-dim);padding-top:0.5rem">
-          <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Subtotal</span>
-            <span id="sum-subtotal" style="font-weight:600">$0.00</span>
-          </div>
-          <div class="summary-row" id="discount-row" style="display:none!important">
-            <span style="color:#9ca3af;font-size:0.875rem">Discount</span>
-            <span id="sum-discount" style="color:#4ade80;font-weight:600">-$0.00</span>
-          </div>
-          <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Shipping</span>
-            <span id="sum-shipping" style="font-weight:600;color:#4ade80">FREE</span>
-          </div>
-          <div class="summary-row">
-            <span style="color:#9ca3af;font-size:0.875rem">Tax (10%)</span>
-            <span id="sum-tax" style="font-weight:600">$0.00</span>
-          </div>
-          <div class="summary-row" style="border-top:2px solid var(--border-mid)!important;margin-top:0.5rem;padding-top:1rem">
-            <span style="font-size:1.05rem;font-weight:700">Total</span>
-            <span id="sum-total" class="text-gradient" style="font-size:1.5rem;font-family:'Space Mono',monospace;font-weight:700">$0.00</span>
-          </div>
+        <!-- Remember me -->
+        <div class="remember-row">
+          <input type="checkbox" id="remember-me" />
+          <label class="remember-label" for="remember-me">Remember me for 30 days</label>
         </div>
 
-        <!-- CTA -->
-        <button id="checkout-btn" class="btn-primary" style="width:100%;margin-top:1.5rem;padding:0.9rem;font-size:0.95rem" disabled>
-          Proceed to Checkout
+        <!-- Submit -->
+        <button class="btn-primary submit-btn" type="submit" id="login-btn">
+          <span id="login-btn-text">Sign In</span>
+          <span class="btn-spinner" id="login-spinner" aria-hidden="true">
+            <svg class="spinning" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </span>
         </button>
-        <a href="/pages/products.html" class="btn-outline" style="width:100%;margin-top:0.75rem;padding:0.75rem;font-size:0.875rem;text-align:center;display:block">
-          Continue Shopping
-        </a>
 
-        <!-- Trust -->
-        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem">
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">🔒 SSL-encrypted checkout</p>
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">📦 Free shipping over $50</p>
-          <p style="font-size:0.75rem;color:#6b7280;display:flex;align-items:center;gap:0.4rem">↩️ 30-day hassle-free returns</p>
-        </div>
+      </form>
+
+      <!-- Demo hint -->
+      <div class="demo-hint" role="note" aria-label="Demo credentials">
+        <p class="demo-hint-title">🧪 Demo credentials</p>
+        <p class="demo-hint-row">Email: <code class="demo-code">demo@toyverse.com</code></p>
+        <p class="demo-hint-row">Password: <code class="demo-code">Demo@1234</code></p>
       </div>
 
     </div>
-  </div>
+  </main>
+</div>
 
-  <div id="app-footer"></div>
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="toast-icon" id="toast-icon" aria-hidden="true"></span>
+  <span class="toast-msg"  id="toast-msg"></span>
+</div>
 
-  <script type="module">
-    import {
-      getCart, saveCart, getWishlist, calcTotals, promoCodes,
-      mountNavbar, mountFooter
-    } from '../src/data/data.js'
+<script type="module">
+  // ── Demo users ──
+  const DEMO_USERS = [
+    { email: 'demo@toyverse.com', password: 'Demo@1234', name: 'Demo User' },
+  ]
 
-    mountNavbar()
-    mountFooter()
+  // ── Toast ──
+  function showToast(msg, icon, color) {
+    document.getElementById('toast-msg').textContent  = msg
+    document.getElementById('toast-icon').textContent = icon || '✓'
+    document.getElementById('toast-icon').style.color = color || '#4ade80'
+    const t = document.getElementById('toast')
+    t.style.display = 'flex'
+    clearTimeout(window._toast)
+    window._toast = setTimeout(() => { t.style.display = 'none' }, 3500)
+  }
 
-    let discountRate = 0
+  // ── Social (mock) ──
+  document.getElementById('google-btn').addEventListener('click', () =>
+    showToast('Google login coming soon!', '🔗', '#a855f7'))
+  document.getElementById('github-btn').addEventListener('click', () =>
+    showToast('GitHub login coming soon!', '🔗', '#a855f7'))
 
-    function render() {
-      const cart = getCart()
-      const empty   = document.getElementById('empty-cart')
-      const list    = document.getElementById('cart-list')
-      const checkoutBtn = document.getElementById('checkout-btn')
+  // ── Forgot password (mock) ──
+  document.getElementById('forgot-link').addEventListener('click', e => {
+    e.preventDefault()
+    showToast('Password reset link sent! Check your inbox.', '📧', '#a855f7')
+  })
 
-      if (!cart.length) {
-        empty.style.display = 'block'
-        list.innerHTML = ''
-        checkoutBtn.disabled = true
-        checkoutBtn.style.opacity = '0.45'
-        checkoutBtn.style.cursor  = 'not-allowed'
-        updateSummary(cart)
-        return
-      }
+  // ── Toggle password visibility ──
+  const pwInput = document.getElementById('login-password')
+  const eyeIcon = document.getElementById('eye-icon')
+  const toggleBtn = document.getElementById('toggle-pw-btn')
 
-      empty.style.display = 'none'
-      checkoutBtn.disabled = false
-      checkoutBtn.style.opacity = '1'
-      checkoutBtn.style.cursor  = 'pointer'
+  toggleBtn.addEventListener('click', () => {
+    const show = pwInput.type === 'password'
+    pwInput.type = show ? 'text' : 'password'
+    toggleBtn.setAttribute('aria-label', show ? 'Hide password' : 'Show password')
+    eyeIcon.innerHTML = show
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+  })
 
-      list.innerHTML = cart.map((item, idx) => `
-        <div class="cart-item" style="animation-delay:${idx * 0.07}s">
-          <div class="cart-item-img">${item.emoji}</div>
+  // ── Field error helpers ──
+  function setError(id, msg) {
+    const el = document.getElementById(id)
+    el.textContent = msg
+  }
+  function clearError(id, inputId) {
+    setError(id, '')
+    if (inputId) document.getElementById(inputId).style.borderColor = ''
+  }
 
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.35rem">
-              <h3 style="font-size:0.95rem;line-height:1.4">${item.name}</h3>
-              <button class="remove-btn" data-id="${item.id}" title="Remove" style="background:none;border:none;cursor:pointer;color:#6b7280;flex-shrink:0;transition:color 0.2s;padding:0.2rem"
-                onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='#6b7280'">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-            <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.75rem">${item.category}</p>
+  // ── Live clear on input ──
+  document.getElementById('login-email').addEventListener('input',
+    () => clearError('email-error', 'login-email'))
+  document.getElementById('login-password').addEventListener('input',
+    () => clearError('password-error', 'login-password'))
 
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
-              <div class="qty-control">
-                <button class="qty-btn dec-btn" data-id="${item.id}">−</button>
-                <span class="qty-val">${item.quantity}</span>
-                <button class="qty-btn inc-btn" data-id="${item.id}">+</button>
-              </div>
-              <div style="text-align:right">
-                <p style="font-size:0.7rem;color:#6b7280">$${item.price.toFixed(2)} each</p>
-                <p style="font-weight:700;font-size:1.05rem">$${(item.price * item.quantity).toFixed(2)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('')
+  // ── Form submit ──
+  document.getElementById('login-form').addEventListener('submit', async e => {
+    e.preventDefault()
 
-      // bind qty buttons
-      list.querySelectorAll('.inc-btn').forEach(btn =>
-        btn.addEventListener('click', () => changeQty(Number(btn.dataset.id), 1)))
-      list.querySelectorAll('.dec-btn').forEach(btn =>
-        btn.addEventListener('click', () => changeQty(Number(btn.dataset.id), -1)))
-      list.querySelectorAll('.remove-btn').forEach(btn =>
-        btn.addEventListener('click', () => removeItem(Number(btn.dataset.id))))
+    const email    = document.getElementById('login-email').value.trim()
+    const password = document.getElementById('login-password').value
+    const remember = document.getElementById('remember-me').checked
 
-      updateSummary(cart)
+    let hasError = false
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('email-error', 'Please enter a valid email address.')
+      document.getElementById('login-email').style.borderColor = '#f87171'
+      hasError = true
+    }
+    if (!password || password.length < 6) {
+      setError('password-error', 'Password must be at least 6 characters.')
+      document.getElementById('login-password').style.borderColor = '#f87171'
+      hasError = true
     }
 
-    function changeQty(id, delta) {
-      let cart = getCart()
-      const item = cart.find(i => i.id === id)
-      if (!item) return
-      item.quantity += delta
-      if (item.quantity <= 0) cart = cart.filter(i => i.id !== id)
-      saveCart(cart)
-      render()
+    if (hasError) {
+      document.getElementById('login-form').classList.add('shake')
+      setTimeout(() => document.getElementById('login-form').classList.remove('shake'), 400)
+      return
     }
 
-    function removeItem(id) {
-      saveCart(getCart().filter(i => i.id !== id))
-      render()
+    // Show spinner
+    const btn = document.getElementById('login-btn')
+    btn.disabled = true
+    document.getElementById('login-btn-text').textContent = 'Signing in\u2026'
+    document.getElementById('login-spinner').style.display = 'block'
+
+    // Simulate API call
+    await new Promise(r => setTimeout(r, 1200))
+
+    // Check against demo users + any registered users
+    const registered = JSON.parse(localStorage.getItem('tv_users') || '[]')
+    const allUsers   = [...DEMO_USERS, ...registered]
+    const user       = allUsers.find(u => u.email === email && u.password === password)
+
+    if (user) {
+      const session = { email: user.email, name: user.name, loggedIn: true }
+      if (remember) localStorage.setItem('tv_session', JSON.stringify(session))
+      else          sessionStorage.setItem('tv_session', JSON.stringify(session))
+
+      showToast('Welcome back, ' + user.name + '! \uD83C\uDF89', '\u2713', '#4ade80')
+
+      // ── Redirect to home after toast ──
+      setTimeout(() => {
+        window.location.replace('/index.html')
+      }, 1200)
+
+    } else {
+      btn.disabled = false
+      document.getElementById('login-btn-text').textContent = 'Sign In'
+      document.getElementById('login-spinner').style.display = 'none'
+      setError('email-error', ' ')
+      setError('password-error', 'Invalid email or password.')
+      document.getElementById('login-password').style.borderColor = '#f87171'
+      document.getElementById('login-form').classList.add('shake')
+      setTimeout(() => document.getElementById('login-form').classList.remove('shake'), 400)
     }
+  })
 
-    function updateSummary(cart) {
-      const t = calcTotals(cart, discountRate)
-      document.getElementById('sum-subtotal').textContent = `$${t.subtotal.toFixed(2)}`
-      document.getElementById('sum-tax').textContent      = `$${t.tax.toFixed(2)}`
-      document.getElementById('sum-total').textContent    = `$${t.total.toFixed(2)}`
-
-      const shEl = document.getElementById('sum-shipping')
-      shEl.textContent = t.shipping === 0 ? 'FREE' : `$${t.shipping.toFixed(2)}`
-      shEl.style.color  = t.shipping === 0 ? '#4ade80' : '#fff'
-
-      const discRow = document.getElementById('discount-row')
-      if (t.discountAmt > 0) {
-        discRow.style.display = 'flex'
-        document.getElementById('sum-discount').textContent = `-$${t.discountAmt.toFixed(2)}`
-      } else {
-        discRow.style.display = 'none'
-      }
+  // ── If already logged in, go straight to home ──
+  const raw = localStorage.getItem('tv_session') || sessionStorage.getItem('tv_session')
+  if (raw) {
+    const s = JSON.parse(raw)
+    if (s && s.loggedIn) {
+      window.location.replace('/index.html')
     }
-
-    // ===== PROMO =====
-    function showAppliedState(code, rate) {
-      discountRate = rate
-      document.getElementById('promo-input-row').style.display   = 'none'
-      document.getElementById('promo-applied-row').style.display = 'flex'
-      document.getElementById('promo-badge-text').textContent    = `"${code}" — ${(rate*100).toFixed(0)}% off applied!`
-      document.getElementById('promo-msg').textContent           = ''
-      updateSummary(getCart())
-    }
-
-    function resetPromo() {
-      discountRate = 0
-      document.getElementById('promo-input-row').style.display   = 'flex'
-      document.getElementById('promo-applied-row').style.display = 'none'
-      document.getElementById('promo-input').value               = ''
-      document.getElementById('promo-input').focus()
-      document.getElementById('promo-msg').textContent           = ''
-      updateSummary(getCart())
-    }
-
-    document.getElementById('remove-promo').addEventListener('click', resetPromo)
-
-    document.getElementById('apply-promo').addEventListener('click', () => {
-      const code = document.getElementById('promo-input').value.toUpperCase().trim()
-      const msg  = document.getElementById('promo-msg')
-
-      if (!code) {
-        msg.style.color = '#f87171'
-        msg.textContent = 'Please enter a promo code.'
-        return
-      }
-      if (promoCodes[code]) {
-        showAppliedState(code, promoCodes[code])
-      } else {
-        msg.style.color = '#f87171'
-        msg.textContent = 'Invalid code. Try SAVE10 or WELCOME20.'
-      }
-    })
-
-    // Allow pressing Enter in promo input
-    document.getElementById('promo-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('apply-promo').click()
-    })
-
-    // ===== CHECKOUT =====
-    document.getElementById('checkout-btn').addEventListener('click', () => {
-      const cart = getCart()
-      if (!cart.length) return
-      localStorage.setItem('tv_checkout', JSON.stringify({ cart, discountRate }))
-      window.location.href = '/pages/payment.html'
-    })
-
-    // ===== INIT =====
-    render()
-    window.addEventListener('tv:cart-updated', render)
-
-    // Responsive: stack layout on mobile
-    const layout = document.getElementById('cart-layout')
-    function checkLayout() {
-      layout.style.gridTemplateColumns = window.innerWidth < 768 ? '1fr' : '1fr 360px'
-    }
-    checkLayout()
-    window.addEventListener('resize', checkLayout)
-  </script>
+  }
+</script>
 
 </body>
 </html>
