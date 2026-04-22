@@ -23,7 +23,7 @@
       top: -200px; left: 50%; transform: translateX(-50%);
       pointer-events: none;
     }
-    .about-hero-badge {
+    .about-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -33,38 +33,19 @@
       border-radius: 9999px;
       margin-bottom: 1.5rem;
     }
-    .about-hero-badge-text {
+    .about-badge-text {
       font-size: 0.75rem;
       color: #a855f7;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
-    .about-hero-title {
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-    }
-    .about-hero-sub {
-      color: #9ca3af;
-      font-size: 1.1rem;
-      line-height: 1.7;
-      max-width: 600px;
-      margin: 0 auto 2.5rem;
-    }
-    .about-hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      flex-wrap: wrap;
-    }
-    .about-stat { text-align: center; }
-    .about-stat-val {
-      font-size: 2.5rem;
-      font-family: 'Space Mono', monospace;
-      font-weight: 700;
-    }
-    .about-stat-lbl { color: #6b7280; font-size: 0.85rem; margin-top: 0.25rem; }
+    .about-hero-title { font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+    .about-hero-sub   { color: #9ca3af; font-size: 1.1rem; line-height: 1.7; max-width: 600px; margin: 0 auto 2.5rem; }
+    .about-hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .about-stat       { text-align: center; }
+    .about-stat-val   { font-size: 2.5rem; font-family: 'Space Mono', monospace; font-weight: 700; }
+    .about-stat-lbl   { color: #6b7280; font-size: 0.85rem; margin-top: 0.25rem; }
 
     /* ── Story ── */
     .story-grid {
@@ -82,23 +63,22 @@
       padding: 3rem;
       text-align: center;
     }
-    .story-emoji { font-size: 5rem; display: block; margin-bottom: 1.5rem; }
-    .story-quote {
-      font-size: 1.1rem;
-      color: #d1d5db;
-      line-height: 1.7;
-      font-style: italic;
-    }
-    .story-quote-author {
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: #6b7280;
-    }
-    .story-title    { font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 1.25rem; }
-    .story-body     { color: #9ca3af; line-height: 1.8; font-size: 0.95rem; }
-    .story-body + .story-body { margin-top: 1rem; }
+    .story-emoji        { font-size: 5rem; display: block; margin-bottom: 1.5rem; }
+    .story-quote        { font-size: 1.1rem; color: #d1d5db; line-height: 1.7; font-style: italic; }
+    .story-quote-author { margin-top: 1rem; font-size: 0.85rem; color: #6b7280; }
+    .story-title        { font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 1.25rem; }
+    .story-body         { color: #9ca3af; line-height: 1.8; font-size: 0.95rem; }
+    .story-body-gap     { color: #9ca3af; line-height: 1.8; font-size: 0.95rem; margin-top: 1rem; }
 
-    /* ── Mission & Values ── */
+    /* ── Section labels ── */
+    .section-eyebrow  { font-size: 0.75rem; color: #a855f7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    .section-heading  { font-size: clamp(1.8rem, 3.5vw, 2.8rem); margin-bottom: 1rem; }
+    .section-desc     { color: #6b7280; font-size: 0.95rem; max-width: 600px; }
+    .section-center   { text-align: center; margin-bottom: 3rem; }
+    .section-center-auto { text-align: center; margin-bottom: 3rem; }
+    .section-desc-centered { color: #6b7280; font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+
+    /* ── Values ── */
     .values-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -111,36 +91,23 @@
       padding: 2rem;
       transition: border-color 0.3s, transform 0.3s;
     }
-    .value-card:hover {
-      border-color: var(--accent-purple);
-      transform: translateY(-6px);
-    }
-    .value-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
+    .value-card:hover { border-color: var(--accent-purple); transform: translateY(-6px); }
+    .value-icon  { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
     .value-title { font-size: 1.1rem; margin-bottom: 0.6rem; }
     .value-desc  { color: #6b7280; font-size: 0.875rem; line-height: 1.6; }
 
     /* ── Timeline ── */
-    .timeline {
-      position: relative;
-      max-width: 700px;
-      margin: 0 auto;
-    }
+    .timeline { position: relative; max-width: 700px; margin: 0 auto; }
     .timeline::before {
       content: '';
       position: absolute;
-      left: 50%;
-      top: 0; bottom: 0;
+      left: 50%; top: 0; bottom: 0;
       width: 2px;
       background: linear-gradient(180deg, #7c3aed, #db2777, #06b6d4);
       transform: translateX(-50%);
     }
-    @media (max-width: 640px) {
-      .timeline::before { left: 1.25rem; }
-    }
+    @media (max-width: 640px) { .timeline::before { left: 1.25rem; } }
+
     .timeline-item {
       display: flex;
       align-items: flex-start;
@@ -148,27 +115,25 @@
       margin-bottom: 3rem;
       position: relative;
     }
-    .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+    .timeline-item-even { flex-direction: row-reverse; }
     @media (max-width: 640px) {
       .timeline-item,
-      .timeline-item:nth-child(even) { flex-direction: row; padding-left: 3rem; }
+      .timeline-item-even { flex-direction: row; padding-left: 3rem; }
     }
+
     .timeline-dot {
       position: absolute;
-      left: 50%;
-      top: 0.35rem;
+      left: 50%; top: 0.35rem;
       transform: translateX(-50%);
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border-radius: 50%;
       background: linear-gradient(135deg, #7c3aed, #db2777);
       border: 2px solid var(--bg-primary);
       flex-shrink: 0;
       z-index: 1;
     }
-    @media (max-width: 640px) {
-      .timeline-dot { left: 1.25rem; transform: none; }
-    }
+    @media (max-width: 640px) { .timeline-dot { left: 1.25rem; transform: none; } }
+
     .timeline-content {
       flex: 1;
       background: var(--bg-card);
@@ -178,16 +143,11 @@
       max-width: calc(50% - 2rem);
     }
     @media (max-width: 640px) { .timeline-content { max-width: 100%; } }
-    .timeline-year {
-      font-size: 0.75rem;
-      color: #a855f7;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.4rem;
-    }
-    .timeline-title { font-size: 1rem; margin-bottom: 0.4rem; }
-    .timeline-desc  { font-size: 0.85rem; color: #6b7280; line-height: 1.6; }
+
+    .timeline-spacer { flex: 1; }
+    .timeline-year   { font-size: 0.75rem; color: #a855f7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+    .timeline-title  { font-size: 1rem; margin-bottom: 0.4rem; }
+    .timeline-desc   { font-size: 0.85rem; color: #6b7280; line-height: 1.6; }
 
     /* ── Team ── */
     .team-grid {
@@ -213,9 +173,13 @@
       justify-content: center;
       font-size: 2rem;
     }
-    .team-name   { font-size: 1rem; margin-bottom: 0.25rem; }
-    .team-role   { font-size: 0.8rem; color: #a855f7; font-weight: 600; margin-bottom: 0.6rem; }
-    .team-bio    { font-size: 0.8rem; color: #6b7280; line-height: 1.5; }
+    .team-avatar-1 { background: linear-gradient(135deg,rgba(168,85,247,0.2),rgba(236,72,153,0.2)); }
+    .team-avatar-2 { background: linear-gradient(135deg,rgba(6,182,212,0.2),rgba(37,99,235,0.2)); }
+    .team-avatar-3 { background: linear-gradient(135deg,rgba(16,163,74,0.2),rgba(5,150,105,0.2)); }
+    .team-avatar-4 { background: linear-gradient(135deg,rgba(217,119,6,0.2),rgba(220,38,38,0.2)); }
+    .team-name { font-size: 1rem; margin-bottom: 0.25rem; }
+    .team-role { font-size: 0.8rem; color: #a855f7; font-weight: 600; margin-bottom: 0.6rem; }
+    .team-bio  { font-size: 0.8rem; color: #6b7280; line-height: 1.5; }
 
     /* ── CTA ── */
     .about-cta {
@@ -228,36 +192,22 @@
     .about-cta-title { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1rem; }
     .about-cta-sub   { color: #9ca3af; margin-bottom: 2rem; font-size: 1rem; }
     .about-cta-btns  { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .about-cta-btn-primary { padding: 0.9rem 2rem; font-size: 1rem; }
+    .about-cta-btn-outline { padding: 0.9rem 2rem; font-size: 1rem; }
 
-    /* ── Section titles ── */
-    .section-eyebrow {
-      font-size: 0.75rem;
-      color: #a855f7;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.75rem;
-    }
-    .section-heading {
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      margin-bottom: 1rem;
-    }
-    .section-desc {
-      color: #6b7280;
-      font-size: 0.95rem;
-      max-width: 600px;
-    }
+    /* ── bg alt section ── */
+    .section-bg-alt { background: #1A1A1A; }
   </style>
 </head>
 <body>
 
   <div id="app-navbar"></div>
 
-  <!-- ═══ HERO ═══ -->
+  <!-- Hero -->
   <section class="about-hero">
     <div class="section-inner">
-      <div class="about-hero-badge">
-        <span class="about-hero-badge-text">✦ Our Story</span>
+      <div class="about-badge">
+        <span class="about-badge-text">✦ Our Story</span>
       </div>
       <h1 class="about-hero-title">
         We Bring the <span class="text-gradient">Magic of Play</span><br>to Every Home
@@ -287,7 +237,7 @@
     </div>
   </section>
 
-  <!-- ═══ OUR STORY ═══ -->
+  <!-- Story -->
   <section class="section">
     <div class="section-inner">
       <div class="story-grid">
@@ -296,7 +246,7 @@
           <p class="story-quote">
             "Play is not just fun — it's how children learn to think, create, and understand the world."
           </p>
-          <p class="story-quote-author">— Alex Rivera, Founder & CEO</p>
+          <p class="story-quote-author">— Alex Rivera, Founder &amp; CEO</p>
         </div>
         <div>
           <p class="section-eyebrow">How It Started</p>
@@ -306,12 +256,11 @@
             safe, and imaginative toys for his daughter. Tired of cheap products and overwhelming choices,
             he decided to curate a collection that met his own high standards.
           </p>
-          <p class="story-body" style="margin-top:1rem">
+          <p class="story-body-gap">
             What started as a passion project quickly grew into a beloved brand. Today, ToyVerse ships to
-            over 30 countries and has helped more than 50,000 families find the perfect gift — from
-            STEM-focused building kits to classic plushies that stand the test of time.
+            over 30 countries and has helped more than 50,000 families find the perfect gift.
           </p>
-          <p class="story-body" style="margin-top:1rem">
+          <p class="story-body-gap">
             Every product in our catalogue is hand-picked by our expert team, tested for safety, and
             reviewed by real parents and children before it reaches your doorstep.
           </p>
@@ -320,17 +269,16 @@
     </div>
   </section>
 
-  <!-- ═══ MISSION & VALUES ═══ -->
-  <section class="section" style="background:#1A1A1A">
+  <!-- Values -->
+  <section class="section section-bg-alt">
     <div class="section-inner">
-      <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-center-auto">
         <p class="section-eyebrow">What Drives Us</p>
-        <h2 class="section-heading heading-gradient">Our Mission & Values</h2>
-        <p class="section-desc" style="margin:0 auto">
+        <h2 class="section-heading heading-gradient">Our Mission &amp; Values</h2>
+        <p class="section-desc-centered">
           Everything we do is guided by a commitment to quality, safety, and the belief that play shapes the future.
         </p>
       </div>
-
       <div class="values-grid">
         <div class="value-card">
           <span class="value-icon">🛡️</span>
@@ -366,15 +314,16 @@
     </div>
   </section>
 
-  <!-- ═══ TIMELINE ═══ -->
+  <!-- Timeline -->
   <section class="section">
     <div class="section-inner">
-      <div style="text-align:center;margin-bottom:4rem">
+      <div class="section-center-auto">
         <p class="section-eyebrow">Milestones</p>
         <h2 class="section-heading heading-gradient">Our Journey</h2>
       </div>
 
       <div class="timeline" aria-label="Company timeline">
+
         <div class="timeline-item">
           <div class="timeline-dot" aria-hidden="true"></div>
           <div class="timeline-content">
@@ -382,12 +331,12 @@
             <h3 class="timeline-title">ToyVerse Founded</h3>
             <p class="timeline-desc">Alex Rivera launches ToyVerse from his garage with just 50 carefully curated products.</p>
           </div>
-          <div style="flex:1"></div>
+          <div class="timeline-spacer"></div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-even">
           <div class="timeline-dot" aria-hidden="true"></div>
-          <div style="flex:1"></div>
+          <div class="timeline-spacer"></div>
           <div class="timeline-content">
             <p class="timeline-year">2019</p>
             <h3 class="timeline-title">First 1,000 Customers</h3>
@@ -402,16 +351,16 @@
             <h3 class="timeline-title">Going International</h3>
             <p class="timeline-desc">Expanded shipping to 15 countries. Launched the ToyVerse Safety Seal — our promise of quality assurance.</p>
           </div>
-          <div style="flex:1"></div>
+          <div class="timeline-spacer"></div>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-even">
           <div class="timeline-dot" aria-hidden="true"></div>
-          <div style="flex:1"></div>
+          <div class="timeline-spacer"></div>
           <div class="timeline-content">
             <p class="timeline-year">2022</p>
             <h3 class="timeline-title">10,000 Product Catalogue</h3>
-            <p class="timeline-desc">Passed 10,000 SKUs and launched the STEM & Educational range, now our bestselling category.</p>
+            <p class="timeline-desc">Passed 10,000 SKUs and launched the STEM &amp; Educational range, now our bestselling category.</p>
           </div>
         </div>
 
@@ -422,44 +371,44 @@
             <h3 class="timeline-title">50K+ Families Served</h3>
             <p class="timeline-desc">Crossed 50,000 customers and launched our new platform — faster, smarter, and more magical than ever.</p>
           </div>
-          <div style="flex:1"></div>
+          <div class="timeline-spacer"></div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ═══ TEAM ═══ -->
-  <section class="section" style="background:#1A1A1A">
+  <!-- Team -->
+  <section class="section section-bg-alt">
     <div class="section-inner">
-      <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-center-auto">
         <p class="section-eyebrow">The People</p>
         <h2 class="section-heading heading-gradient">Meet Our Team</h2>
-        <p class="section-desc" style="margin:0 auto">
+        <p class="section-desc-centered">
           A small but mighty team united by a love of toys, great design, and making families smile.
         </p>
       </div>
-
       <div class="team-grid">
         <div class="team-card">
-          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(236,72,153,0.2))">🧑‍💼</div>
+          <div class="team-avatar team-avatar-1">🧑‍💼</div>
           <h3 class="team-name">Alex Rivera</h3>
-          <p class="team-role">Founder & CEO</p>
+          <p class="team-role">Founder &amp; CEO</p>
           <p class="team-bio">Father of two, toy enthusiast, and the original dreamer behind ToyVerse. Leads vision and strategy.</p>
         </div>
         <div class="team-card">
-          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(37,99,235,0.2))">👩‍🎨</div>
+          <div class="team-avatar team-avatar-2">👩‍🎨</div>
           <h3 class="team-name">Priya Nair</h3>
           <p class="team-role">Head of Product</p>
           <p class="team-bio">Curates every single product in our catalogue. Former child psychologist with a passion for purposeful play.</p>
         </div>
         <div class="team-card">
-          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(16,163,74,0.2),rgba(5,150,105,0.2))">👨‍💻</div>
+          <div class="team-avatar team-avatar-3">👨‍💻</div>
           <h3 class="team-name">Marcus Chen</h3>
           <p class="team-role">Lead Engineer</p>
           <p class="team-bio">Builds the technology that makes ToyVerse fast, reliable, and delightful to use on any device.</p>
         </div>
         <div class="team-card">
-          <div class="team-avatar" style="background:linear-gradient(135deg,rgba(217,119,6,0.2),rgba(220,38,38,0.2))">👩‍💼</div>
+          <div class="team-avatar team-avatar-4">👩‍💼</div>
           <h3 class="team-name">Sofia Martínez</h3>
           <p class="team-role">Customer Experience</p>
           <p class="team-bio">Makes sure every interaction — from browsing to unboxing — feels special. Champion of the 5-star review.</p>
@@ -468,7 +417,7 @@
     </div>
   </section>
 
-  <!-- ═══ CTA ═══ -->
+  <!-- CTA -->
   <section class="section">
     <div class="section-inner">
       <div class="about-cta">
@@ -479,8 +428,8 @@
           Join 50,000+ families who trust ToyVerse for quality toys and unforgettable gifts.
         </p>
         <div class="about-cta-btns">
-          <a href="/pages/products.html" class="btn-primary" style="padding:0.9rem 2rem;font-size:1rem">Shop Now</a>
-          <a href="/pages/contact.html" class="btn-outline" style="padding:0.9rem 2rem;font-size:1rem">Get in Touch</a>
+          <a href="/pages/products.html" class="btn-primary about-cta-btn-primary">Shop Now</a>
+          <a href="/pages/contact.html"  class="btn-outline about-cta-btn-outline">Get in Touch</a>
         </div>
       </div>
     </div>
